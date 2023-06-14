@@ -3,6 +3,7 @@ package br.ufrn.imd.controle;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import br.ufrn.imd.modelo.Jogo;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -17,6 +18,8 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 
 public class TelaPrincipalController implements Initializable {
+	
+	private Jogo jogo;
 
     @FXML
     private ColumnConstraints c0;

@@ -3,6 +3,7 @@ package br.ufrn.imd.controle;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import br.ufrn.imd.modelo.Campo;
 import br.ufrn.imd.modelo.Jogo;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,13 +17,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.control.Button;
 
 public class TelaPrincipalController implements Initializable {
 	
 	private Jogo jogo;
-
-    @FXML
-    private ColumnConstraints c0;
 
     @FXML
     private GridPane campoComputador;
@@ -30,22 +30,22 @@ public class TelaPrincipalController implements Initializable {
     @FXML
     private GridPane campoJogador;
 
-    @FXML
-    private RowConstraints r0;
+	@FXML Button botaoInit;
+
     
     public TelaPrincipalController() {
     	System.out.println("Primeiro o construc");
     }
 
-    @FXML
+    /*@FXML
     void clicou(MouseEvent event) {
     	Pane source = (Pane)event.getSource();
         int colIndex = GridPane.getColumnIndex(source);
         int rowIndex = GridPane.getRowIndex(source);
         System.out.printf("Mouse entered cell [%d, %d]%n", colIndex, rowIndex);
-    }
+    }*/
 
-	@FXML public void clicouQuardado(MouseEvent event) {}
+	
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -66,23 +66,46 @@ public class TelaPrincipalController implements Initializable {
         }*/
 
         configurarValoresIniciais();
-        Pane pane = new Pane();
-        pane.setBackground(new Background(new BackgroundFill(Color.BLUE, null, null)));
-       
+
+        
+        
 		
 	}
 	
 	public void configurarValoresIniciais() {
+		
 		System.out.println("Valores");
+		
+		jogo = new Jogo();
+		Campo modeloJog = new Campo();
+		Campo modeloCmp = new Campo();
+		
+		jogo.setCampoComputador(modeloCmp);
+		jogo.setCampoJogador(modeloJog);
+		
+		
 		for (int row = 0; row < 10; row++) {
 	        for (int col = 0; col < 10; col++) {
-	            Pane pane = new Pane();
-	            pane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-	            campoJogador.add(pane, col, row);
+	        	Rectangle rec1 = new Rectangle(50,50);
+	        	Rectangle rec2 = new Rectangle(50,50);
+	            campoComputador.add(rec1, col, row);
+	            campoJogador.add(rec2, col, row);
+	            
 	        }
 	    }
 		
+		
+		
 	}
+
+	@FXML public void iniciarJogo() {
+		jogo.setComecou(true);
+		jogo.colocarNavios();
+		
+		
+	}
+	
+	
 	
 
 }

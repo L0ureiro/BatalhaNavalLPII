@@ -6,7 +6,9 @@ public class Celula {
 	private boolean atingido;
 	
 	public Celula() {
+		
 		temNavio = false;
 		atingido = false;
+		
 	}
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -81,5 +82,6 @@
             <RowConstraints minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
+      <Button fx:id="botaoInit" layoutX="527.0" layoutY="590.0" mnemonicParsing="false" onAction="#iniciarJogo" text="Jogar" />
    </children>
 </AnchorPane>

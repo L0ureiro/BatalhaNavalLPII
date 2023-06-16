@@ -55,8 +55,6 @@ public class TelaPrincipalController implements Initializable {
     private double initialTranslateY;
 
     private boolean isDragging;
-    
-    private boolean isRotating = false;
 
 	@FXML AnchorPane anchorPane;
 
@@ -248,11 +246,6 @@ public class TelaPrincipalController implements Initializable {
     private void onImageDragged(MouseEvent event) {
     	ImageView imageView = (ImageView) event.getSource();
     	
-    	if (isRotating && event.isPrimaryButtonDown()) {
-        	System.out.println("Roda ai");
-            imageView.setRotate(imageView.getRotate() + 90);
-        }
-    	
     	if (isDragging) {
             
             double newX = event.getSceneX() - offsetX;
@@ -305,21 +298,21 @@ public class TelaPrincipalController implements Initializable {
     	}
     }
 
-    private boolean isInGridPane(double x, double y, GridPane gridPane) {
-        double gridPaneX = 0;
-        double gridPaneY = 0;
-        double gridPaneWidth = gridPane.getWidth() - 40;
-        double gridPaneHeight = gridPane.getHeight();
-        
-        System.out.println("X = " + x);
-        System.out.println("Y = " + y);
-        
-        System.out.println("Cmp Width = " + gridPane.getWidth());
-        System.out.println("Cmp Heigth = " + gridPane.getHeight());
-        
-        return x >= gridPaneX && x <= gridPaneX + gridPaneWidth
-                && y >= gridPaneY && y <= gridPaneY + gridPaneHeight;
-    }
+//    private boolean isInGridPane(double x, double y, GridPane gridPane) {
+//        double gridPaneX = 0;
+//        double gridPaneY = 0;
+//        double gridPaneWidth = gridPane.getWidth() - 40;
+//        double gridPaneHeight = gridPane.getHeight();
+//        
+//        System.out.println("X = " + x);
+//        System.out.println("Y = " + y);
+//        
+//        System.out.println("Cmp Width = " + gridPane.getWidth());
+//        System.out.println("Cmp Heigth = " + gridPane.getHeight());
+//        
+//        return x >= gridPaneX && x <= gridPaneX + gridPaneWidth
+//                && y >= gridPaneY && y <= gridPaneY + gridPaneHeight;
+//    }
 
     private double snapToGrid(double coordinate) {
         return Math.floor(coordinate / 50) * 50;
@@ -333,7 +326,7 @@ public class TelaPrincipalController implements Initializable {
         double mouseX = anchorPanePoint.getX();
         double mouseY = anchorPanePoint.getY();
 
-        System.out.println("Mouse X: " + mouseX);
-        System.out.println("Mouse Y: " + mouseY);
+//        System.out.println("Mouse X: " + mouseX);
+//        System.out.println("Mouse Y: " + mouseY);
     }
 }

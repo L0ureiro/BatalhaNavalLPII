@@ -139,7 +139,7 @@ public class TelaPrincipalController implements Initializable {
         Rotate rotate = new Rotate(90, image.getWidth() / 2, image.getHeight() / 2);
         imageView.getTransforms().add(rotate);
         
-        imageView.setFitWidth(40);
+        imageView.setFitWidth(45);
         imageView.setFitHeight(90);
         imageViews.add(imageView);
         
@@ -150,7 +150,7 @@ public class TelaPrincipalController implements Initializable {
         rotate = new Rotate(90, image.getWidth() / 2, image.getHeight() / 2);
         imageView.getTransforms().add(rotate);
         
-        imageView.setFitWidth(40);
+        imageView.setFitWidth(45);
         imageView.setFitHeight(140);
         imageViews.add(imageView);
         
@@ -161,7 +161,7 @@ public class TelaPrincipalController implements Initializable {
         rotate = new Rotate(90, image.getWidth() / 2, image.getHeight() / 2);
         imageView.getTransforms().add(rotate);
         
-        imageView.setFitWidth(40);
+        imageView.setFitWidth(45);
         imageView.setFitHeight(190);
         imageViews.add(imageView);
         
@@ -172,7 +172,7 @@ public class TelaPrincipalController implements Initializable {
         rotate = new Rotate(90, image.getWidth() / 2, image.getHeight() / 2);
         imageView.getTransforms().add(rotate);
         
-        imageView.setFitWidth(40);
+        imageView.setFitWidth(45);
         imageView.setFitHeight(240);
         imageViews.add(imageView);
         

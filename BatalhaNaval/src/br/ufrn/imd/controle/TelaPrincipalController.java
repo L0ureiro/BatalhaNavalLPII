@@ -79,9 +79,6 @@ public class TelaPrincipalController implements Initializable {
         }
     }
     
-    public void setRotating(boolean rotating) {
-        isRotating = rotating;
-    }
     
     public void configurarValoresIniciais() {
         System.out.println("Valores");
@@ -211,7 +208,6 @@ public class TelaPrincipalController implements Initializable {
     	    System.out.println("Imagem absoluta Y: " + absoluteY);
     	    
     	    isDragging = true;
-    	    isRotating = false;
     	}
     	
     	if (event.getButton() == MouseButton.SECONDARY) {    		

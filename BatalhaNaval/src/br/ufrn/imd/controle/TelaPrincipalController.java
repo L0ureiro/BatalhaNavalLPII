@@ -129,8 +129,10 @@ public class TelaPrincipalController implements Initializable {
     private List<ImageView> createImageViews() {
         List<ImageView> imageViews = new ArrayList<>();
         
-        //Cruiser 1x2
-        Image image = new Image("file:///C:/Users/carlo/OneDrive/Documentos/lp2/projetoLp2/BatalhaNavalLPII/BatalhaNaval/src/2-Cruiser.png");
+        
+        
+        // Corveta 1x2
+        Image image = new Image(getClass().getResourceAsStream("/images/Corveta1x2.png"));
         
         ImageView imageView = new ImageView(image);
         
@@ -138,33 +140,33 @@ public class TelaPrincipalController implements Initializable {
         imageView.getTransforms().add(rotate);
         
         imageView.setFitWidth(40);
-        imageView.setFitHeight(80);
+        imageView.setFitHeight(90);
         imageViews.add(imageView);
         
-        // Destroyer 1x3
-        image = new Image("file:///C:/Users/carlo/OneDrive/Documentos/lp2/projetoLp2/BatalhaNavalLPII/BatalhaNaval/src/3-Carrier.png");
+        // Submarino 1x3
+        image = new Image(getClass().getResourceAsStream("/images/Submarino1x3.png"));
         imageView = new ImageView(image);
         
         rotate = new Rotate(90, image.getWidth() / 2, image.getHeight() / 2);
         imageView.getTransforms().add(rotate);
         
         imageView.setFitWidth(40);
-        imageView.setFitHeight(120);
+        imageView.setFitHeight(140);
         imageViews.add(imageView);
         
-        // Submarine 1x4
-        image = new Image("file:///C:/Users/carlo/OneDrive/Documentos/lp2/projetoLp2/BatalhaNavalLPII/BatalhaNaval/src/4-SubMarine.png");
+        // Fragata 1x4
+        image = new Image(getClass().getResourceAsStream("/images/Fragata1x4.png"));
         imageView = new ImageView(image);
         
         rotate = new Rotate(90, image.getWidth() / 2, image.getHeight() / 2);
         imageView.getTransforms().add(rotate);
         
         imageView.setFitWidth(40);
-        imageView.setFitHeight(180);
+        imageView.setFitHeight(190);
         imageViews.add(imageView);
         
-        // Não sei 1x5
-        image = new Image("file:///C:/Users/carlo/OneDrive/Documentos/lp2/projetoLp2/BatalhaNavalLPII/BatalhaNaval/src/5-Hull.png");
+        // Destroyer 1x5
+        image = new Image(getClass().getResourceAsStream("/images/Destroyer1x5.png"));
         imageView = new ImageView(image);
         
         rotate = new Rotate(90, image.getWidth() / 2, image.getHeight() / 2);

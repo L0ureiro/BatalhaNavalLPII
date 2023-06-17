@@ -1,24 +1,22 @@
 package br.ufrn.imd.controle;
 
 import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 
 import br.ufrn.imd.modelo.Campo;
+import br.ufrn.imd.modelo.Celula;
 import br.ufrn.imd.modelo.Jogo;
 import br.ufrn.imd.modelo.RotableImageView;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -95,8 +93,8 @@ public class TelaPrincipalController implements Initializable {
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-                Rectangle rec1 = new Rectangle(cellWidth, cellHeight);
-                Rectangle rec2 = new Rectangle(cellWidth, cellHeight);
+                Rectangle rec1 = new Celula(cellWidth, cellHeight);
+                Rectangle rec2 = new Celula(cellWidth, cellHeight);
                 rec1.setFill(Color.BLUE);
                 rec2.setFill(Color.BLUE);
                 campoComputador.add(rec1, col, row);
@@ -140,7 +138,7 @@ public class TelaPrincipalController implements Initializable {
                 
                 snappedX = snapToGrid(col * 50);
                 snappedY = snapToGrid(row * 50);
-            }while(!isInGridPane(snappedX, snappedY, imageView));
+            }while(!isInGridPane(snappedX, snappedY, imageView) || ocuppedArea(campoJogador, (int)snappedY/50, (int)snappedX/50, imageView));
             
             if(((RotableImageView) imageView).isRotated()) {
         	    if(imageView.getId().equals("Corveta") || imageView.getId().equals("Fragata")) {
@@ -153,7 +151,7 @@ public class TelaPrincipalController implements Initializable {
         	    }
     	    }
         	
-        	setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView);
+        	setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView, true);
         	
             imageView.setTranslateX(snappedX + 3);
             imageView.setTranslateY(snappedY);     
@@ -224,7 +222,7 @@ public class TelaPrincipalController implements Initializable {
     	    offsetY = event.getSceneY() - imageView.getTranslateY();
     	    
     	    
-    	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.BLUE, imageView);
+    	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.BLUE, imageView, false);
     	    isDragging = true;
     	}
     	
@@ -245,26 +243,43 @@ public class TelaPrincipalController implements Initializable {
             	return;
             }
             
+            if(((RotableImageView) imageView).isRotated()) {
+            	((RotableImageView) imageView).setRotated(false);
+            	if(ocuppedAreaRotate(campoJogador, (int)snappedY/50, (int)snappedX/50, imageView)) {
+            		((RotableImageView) imageView).setRotated(true);
+            		return;
+            	} else {
+            		((RotableImageView) imageView).setRotated(true);
+            	}
+            } else {
+            	((RotableImageView) imageView).setRotated(true);
+            	if(ocuppedAreaRotate(campoJogador, (int)snappedY/50, (int)snappedX/50, imageView)) {
+            		((RotableImageView) imageView).setRotated(false);
+            		return;
+            	} else {
+            		((RotableImageView) imageView).setRotated(false);
+            	}
+            }
+            
     		if(((RotableImageView) imageView).isRotated()) {
         	    rotate = new Rotate(-90, imageView.getFitWidth() / 2, imageView.getFitHeight() / 2);
-        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.BLUE, imageView);
+        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.BLUE, imageView, false);
         	    ((RotableImageView) imageView).setRotated(false);
-        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView);
+        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView, true);
     	    }
     	    else {
         	    rotate = new Rotate(90, imageView.getFitWidth() / 2, imageView.getFitHeight() / 2);
-        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.BLUE, imageView);
+        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.BLUE, imageView, false);
         	    ((RotableImageView) imageView).setRotated(true);
-        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView);
+        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView, true);
     	    }
+    		
     		
 	        imageView.getTransforms().add(rotate);
 	        
             
             if(imageView.getId().equals("Corveta") || imageView.getId().equals("Fragata")) {
             	if(((RotableImageView) imageView).isRotated()){            		
-            		System.out.println("Inic X = " + snapToGrid(initialTranslateX)/50);
-            		System.out.println("Snap X = " + snappedX);
             		
             		imageView.setTranslateX(snapToGrid(imageView.getTranslateX()) + 28);
                     imageView.setTranslateY(snapToGrid(imageView.getTranslateY()));
@@ -278,11 +293,9 @@ public class TelaPrincipalController implements Initializable {
             else {
             	imageView.setTranslateX(snapToGrid(imageView.getTranslateX()) + 3);
                 imageView.setTranslateY(snapToGrid(imageView.getTranslateY()));
-                System.out.println("Giro X " + snapToGrid(imageView.getTranslateX())); 
-                System.out.println("Giro Y " + snapToGrid(imageView.getTranslateY()));
+
             }
-            
-            
+           
     	}
     }
 
@@ -296,8 +309,6 @@ public class TelaPrincipalController implements Initializable {
     		
             double newX = event.getSceneX() - offsetX;
             double newY = event.getSceneY() - offsetY;
-            double snappedX = snapToGrid(newX);
-            double snappedY = snapToGrid(newY);
             
             imageView.setTranslateX(newX);
             imageView.setTranslateY(newY);
@@ -323,11 +334,13 @@ public class TelaPrincipalController implements Initializable {
 	        double snappedY = snapToGrid(currentY);
 	        
 
-	
-		     
-	        if (!isInGridPane(snappedX, snappedY, imageView)) {
+	    
+	        if (!isInGridPane(snappedX, snappedY, imageView) || ocuppedArea(campoJogador, (int)snappedY/50, (int)snappedX/50, imageView)) {
 	            imageView.setTranslateX(initialTranslateX);
 	            imageView.setTranslateY(initialTranslateY);
+	          
+
+	            setShipArea(campoJogador, (int)initialTranslateY/50, (int)initialTranslateX/50, Color.RED, imageView, true);
 	            System.out.println("NÃO É POSSÍVEL POSICIONAR A IMAGEM FORA DO GRID");
 	        } else {
 	        	
@@ -344,7 +357,7 @@ public class TelaPrincipalController implements Initializable {
 	        	    }
 	    	    }        	
 	        	
-	        	setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView);
+	        	setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView, true);
 	        	
 	            imageView.setTranslateX(snappedX + 3);
 	            imageView.setTranslateY(snappedY);
@@ -353,52 +366,140 @@ public class TelaPrincipalController implements Initializable {
 	
     	}
     }
-
-    private void setShipArea(GridPane campoJogador2, int i, int j, Color color, ImageView imageView) {
-    	System.out.println("Largura = " + imageView.getFitWidth());
-        System.out.println("Altura = " + imageView.getFitHeight());
-        
-        if(((RotableImageView) imageView).isRotated()) {
+    
+    private boolean ocuppedAreaRotate(GridPane campoJogador2, int i, int j, ImageView imageView) {
+    	if(((RotableImageView) imageView).isRotated()) {
         	if(imageView.getId().equals("Corveta")) {
-        		setRectangleBackground(campoJogador, i, j, color, imageView);
-        		setRectangleBackground(campoJogador, i, j+1, color, imageView);
+        		return getAreaOcupada(campoJogador, i, j+1, imageView);
         	} else if (imageView.getId().equals("Submarino")) {
-        		setRectangleBackground(campoJogador, i, j-1, color, imageView);
-        		setRectangleBackground(campoJogador, i, j, color, imageView);
-        		setRectangleBackground(campoJogador, i, j+1, color, imageView);
+        		return getAreaOcupada(campoJogador, i, j-1, imageView) ||
+        			   getAreaOcupada(campoJogador, i, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i, j+1, imageView);
         	} else if (imageView.getId().equals("Fragata")) {
-        		setRectangleBackground(campoJogador, i, j-1, color, imageView);
-        		setRectangleBackground(campoJogador, i, j, color, imageView);
-        		setRectangleBackground(campoJogador, i, j+1, color, imageView);
-        		setRectangleBackground(campoJogador, i, j+2, color, imageView);
+        		return getAreaOcupada(campoJogador, i, j-1, imageView) ||
+        			   getAreaOcupada(campoJogador, i, j+1, imageView) ||
+        			   getAreaOcupada(campoJogador, i, j+2, imageView);
         	}else if (imageView.getId().equals("Destroyer")) {
-        		setRectangleBackground(campoJogador, i, j-2, color, imageView);
-        		setRectangleBackground(campoJogador, i, j-1, color, imageView);
-        		setRectangleBackground(campoJogador, i, j, color, imageView);
-        		setRectangleBackground(campoJogador, i, j+1, color, imageView);
-        		setRectangleBackground(campoJogador, i, j+2, color, imageView);
+        		return getAreaOcupada(campoJogador, i, j-2, imageView) ||
+        		       getAreaOcupada(campoJogador, i, j-1, imageView) ||
+        		       getAreaOcupada(campoJogador, i, j+1, imageView) ||
+        		       getAreaOcupada(campoJogador, i, j+2, imageView);
         	}
         	
         } else {
         	if(imageView.getId().equals("Corveta")) {
-        		setRectangleBackground(campoJogador, i, j, color, imageView);
-        		setRectangleBackground(campoJogador, 1+i, j, color, imageView);
+        		return getAreaOcupada(campoJogador, 1+i, j, imageView);
         	}
         	else if (imageView.getId().equals("Submarino")) {
-        		setRectangleBackground(campoJogador, i-1, j, color, imageView);
-        		setRectangleBackground(campoJogador, i, j, color, imageView);
-        		setRectangleBackground(campoJogador, i+1, j, color, imageView);
+        		return getAreaOcupada(campoJogador, i-1, j, imageView) ||
+        				getAreaOcupada(campoJogador, i+1, j, imageView);
         	} else if (imageView.getId().equals("Fragata")) {
-        		setRectangleBackground(campoJogador, i-1, j, color, imageView);
-        		setRectangleBackground(campoJogador, i, j, color, imageView);
-        		setRectangleBackground(campoJogador, i+1, j, color, imageView);
-        		setRectangleBackground(campoJogador, i+2, j, color, imageView);
+        		return getAreaOcupada(campoJogador, i-1, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i+1, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i+2, j, imageView);
         	} else if (imageView.getId().equals("Destroyer")) {
-        		setRectangleBackground(campoJogador, i-2, j, color, imageView);
-        		setRectangleBackground(campoJogador, i-1, j, color, imageView);
-        		setRectangleBackground(campoJogador, i, j, color, imageView);
-        		setRectangleBackground(campoJogador, i+1, j, color, imageView);
-        		setRectangleBackground(campoJogador, i+2, j, color, imageView);
+        		return getAreaOcupada(campoJogador, i-2, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i-1, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i+1, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i+2, j, imageView);
+        	}
+        }
+    	
+		return false;
+    }
+
+    private boolean ocuppedArea(GridPane campoJogador2, int i, int j, ImageView imageView) {
+		
+    	if(((RotableImageView) imageView).isRotated()) {
+        	if(imageView.getId().equals("Corveta")) {
+        		return getAreaOcupada(campoJogador, i, j, imageView) ||
+        			   getAreaOcupada(campoJogador, i, j+1, imageView);
+        	} else if (imageView.getId().equals("Submarino")) {
+        		return getAreaOcupada(campoJogador, i, j-1, imageView) ||
+        			   getAreaOcupada(campoJogador, i, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i, j+1, imageView);
+        	} else if (imageView.getId().equals("Fragata")) {
+        		return getAreaOcupada(campoJogador, i, j-1, imageView) ||
+        			   getAreaOcupada(campoJogador, i, j, imageView) ||
+        			   getAreaOcupada(campoJogador, i, j+1, imageView) ||
+        			   getAreaOcupada(campoJogador, i, j+2, imageView);
+        	}else if (imageView.getId().equals("Destroyer")) {
+        		return getAreaOcupada(campoJogador, i, j-2, imageView) ||
+        		       getAreaOcupada(campoJogador, i, j-1, imageView) ||
+        		       getAreaOcupada(campoJogador, i, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i, j+1, imageView) ||
+        		       getAreaOcupada(campoJogador, i, j+2, imageView);
+        	}
+        	
+        } else {
+        	if(imageView.getId().equals("Corveta")) {
+        		return getAreaOcupada(campoJogador, i, j, imageView) ||
+        		       getAreaOcupada(campoJogador, 1+i, j, imageView);
+        	}
+        	else if (imageView.getId().equals("Submarino")) {
+        		return getAreaOcupada(campoJogador, i-1, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i+1, j, imageView);
+        	} else if (imageView.getId().equals("Fragata")) {
+        		return getAreaOcupada(campoJogador, i-1, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i+1, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i+2, j, imageView);
+        	} else if (imageView.getId().equals("Destroyer")) {
+        		return getAreaOcupada(campoJogador, i-2, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i-1, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i+1, j, imageView) ||
+        		       getAreaOcupada(campoJogador, i+2, j, imageView);
+        	}
+        }
+    	
+		return false;
+	}
+
+	private void setShipArea(GridPane campoJogador2, int i, int j, Color color, ImageView imageView, boolean ocupado) {
+        
+        if(((RotableImageView) imageView).isRotated()) {
+        	if(imageView.getId().equals("Corveta")) {
+        		setRectangleBackground(campoJogador, i, j, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i, j+1, color, imageView, ocupado);
+        	} else if (imageView.getId().equals("Submarino")) {
+        		setRectangleBackground(campoJogador, i, j-1, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i, j, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i, j+1, color, imageView, ocupado);
+        	} else if (imageView.getId().equals("Fragata")) {
+        		setRectangleBackground(campoJogador, i, j-1, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i, j, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i, j+1, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i, j+2, color, imageView, ocupado);
+        	}else if (imageView.getId().equals("Destroyer")) {
+        		setRectangleBackground(campoJogador, i, j-2, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i, j-1, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i, j, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i, j+1, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i, j+2, color, imageView, ocupado);
+        	}
+        	
+        } else {
+        	if(imageView.getId().equals("Corveta")) {
+        		setRectangleBackground(campoJogador, i, j, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, 1+i, j, color, imageView, ocupado);
+        	}
+        	else if (imageView.getId().equals("Submarino")) {
+        		setRectangleBackground(campoJogador, i-1, j, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i, j, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i+1, j, color, imageView, ocupado);
+        	} else if (imageView.getId().equals("Fragata")) {
+        		setRectangleBackground(campoJogador, i-1, j, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i, j, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i+1, j, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i+2, j, color, imageView, ocupado);
+        	} else if (imageView.getId().equals("Destroyer")) {
+        		setRectangleBackground(campoJogador, i-2, j, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i-1, j, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i, j, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i+1, j, color, imageView, ocupado);
+        		setRectangleBackground(campoJogador, i+2, j, color, imageView, ocupado);
         	}
         }
 		
@@ -408,9 +509,9 @@ public class TelaPrincipalController implements Initializable {
 
         if(x < 0 || y < 0 || x >= 500 || y >= 500) {
         	return false;
-        } else if(imageView.getId().equals("Corveta") && (y > 450) && !((RotableImageView) imageView).isRotated()){
+        } else if(imageView.getId().equals("Corveta") && (y >= 450) && !((RotableImageView) imageView).isRotated()){
         	return false;
-    	}else if(imageView.getId().equals("Corveta") && (x > 450) && ((RotableImageView) imageView).isRotated()){
+    	}else if(imageView.getId().equals("Corveta") && (x >= 450) && ((RotableImageView) imageView).isRotated()){
         	return false;
         }
         else if(imageView.getId().equals("Submarino") && (y < 50 || y > 400) && !((RotableImageView) imageView).isRotated()){
@@ -437,18 +538,33 @@ public class TelaPrincipalController implements Initializable {
         return Math.floor(coordinate / 50) * 50;
     }
     
-    private void setRectangleBackground(GridPane gridPane, int row, int col,  Color color, ImageView imageView) {    
+    private void setRectangleBackground(GridPane gridPane, int row, int col,  Color color, ImageView imageView, boolean ocupado) {    
         
     	Node node = getNodeByRowColumnIndex(row, col, gridPane);
-        if (node instanceof Rectangle) {
-            Rectangle rectangle = (Rectangle) node;
+        if (node instanceof Celula) {
+        	Celula rectangle = (Celula) node;
             rectangle.setFill(color);
+            rectangle.setTemNavio(ocupado);
         }
+    }
+    
+    private boolean getAreaOcupada(GridPane gridPane, int row, int col, ImageView imageView) {    
+        
+    	Node node = getNodeByRowColumnIndex(row, col, gridPane);
+        if (node instanceof Celula) {
+        	Celula rectangle = (Celula) node;
+            System.out.println("Tem navio: " + rectangle.isTemNavio());
+        	return rectangle.isTemNavio();
+        }
+        
+        return false;
     }
 
     private Node getNodeByRowColumnIndex(final int row, final int column, GridPane gridPane) {
         for (Node node : gridPane.getChildren()) {
-            if (GridPane.getColumnIndex(node) == column && GridPane.getRowIndex(node) == row) {
+            Integer columnIndex = GridPane.getColumnIndex(node);
+            Integer rowIndex = GridPane.getRowIndex(node);
+            if (columnIndex != null && rowIndex != null && columnIndex.intValue() == column && rowIndex.intValue() == row) {
                 return node;
             }
         }

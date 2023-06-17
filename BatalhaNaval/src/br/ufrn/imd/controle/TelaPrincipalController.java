@@ -129,41 +129,38 @@ public class TelaPrincipalController implements Initializable {
     
     private List<ImageView> createImageViews() {
         List<ImageView> imageViews = new ArrayList<>();
-        
-       
+
         // Corveta 1x2
         Image image = new Image(getClass().getResourceAsStream("/images/Corveta1x2.png"));
-        
         ImageView imageView = new RotableImageView(image);
-        
         imageView.setFitWidth(45);
         imageView.setFitHeight(90);
+        imageView.setId("Corveta"); // Define o ID com o nome do arquivo
         imageViews.add(imageView);
-        
+
         // Submarino 1x3
         image = new Image(getClass().getResourceAsStream("/images/Submarino1x3.png"));
         imageView = new RotableImageView(image);
-        
         imageView.setFitWidth(45);
         imageView.setFitHeight(140);
+        imageView.setId("Submarino"); // Define o ID com o nome do arquivo
         imageViews.add(imageView);
-        
+
         // Fragata 1x4
         image = new Image(getClass().getResourceAsStream("/images/Fragata1x4.png"));
         imageView = new RotableImageView(image);
-        
         imageView.setFitWidth(45);
         imageView.setFitHeight(190);
+        imageView.setId("Fragata"); // Define o ID com o nome do arquivo
         imageViews.add(imageView);
-        
+
         // Destroyer 1x5
         image = new Image(getClass().getResourceAsStream("/images/Destroyer1x5.png"));
         imageView = new RotableImageView(image);
-        
         imageView.setFitWidth(45);
         imageView.setFitHeight(240);
+        imageView.setId("Destroyer"); // Define o ID com o nome do arquivo
         imageViews.add(imageView);
-        
 
         return imageViews;
     }
@@ -187,54 +184,58 @@ public class TelaPrincipalController implements Initializable {
     	    offsetX = event.getSceneX() - imageView.getTranslateX();
     	    offsetY = event.getSceneY() - imageView.getTranslateY();
     	    
-    	    Point2D imagePositionInScene = imageView.localToScene(0, 0);
-    	    Point2D imagePositionInAnchorPane = imageView.getScene().getRoot().lookup("#anchorPane").localToScene(imagePositionInScene);
-    	    
-    	    double absoluteX;
-    	    double absoluteY;
-    	    
-    	    if(((RotableImageView) imageView).isRotated()) {
-    	    	absoluteX = imagePositionInAnchorPane.getX();
-        	    absoluteY = imagePositionInAnchorPane.getY() + (imageView.getFitWidth()/2);
-    	    }
-    	    else {
-    	    	absoluteX = imagePositionInAnchorPane.getX() + (imageView.getFitWidth()/2);
-        	    absoluteY = imagePositionInAnchorPane.getY();
-    	    }
-    	    
-    	    System.out.println("Largura ==== " + imageView.getFitWidth());
-
-    	    System.out.println("Imagem absoluta X: " + absoluteX);
-    	    System.out.println("Imagem absoluta Y: " + absoluteY);
-    	    
     	    isDragging = true;
     	}
     	
     	if (event.getButton() == MouseButton.SECONDARY) {    		
-    		double absoluteX;
-    	    double absoluteY;
     	    
     	    Rotate rotate;
     		
-    	    Point2D imagePositionInScene = imageView.localToScene(0, 0);
-    	    Point2D imagePositionInAnchorPane = imageView.getScene().getRoot().lookup("#anchorPane").localToScene(imagePositionInScene);
-    	    
+    	 // Ajustando a posição ao grid
+	        double snappedX = snapToGrid(imageView.getTranslateX());
+	        double snappedY = snapToGrid(imageView.getTranslateY());
+	        
+	        System.out.println("POS X = " + snappedX);
+	        System.out.println("POS Y = " + snappedY);
+
+            if(snappedX <= 0 || snappedX >= 450 || snappedY <= 0 || snappedY >= 450) {
+            	return;
+            }
+            if((imageView.getId().equals("Destroyer") || imageView.getId().equals("Fragata")) && ((snappedX <= 50 || snappedX >= 400) || (snappedY <= 50 || snappedY >= 400)) ) {
+            	return;
+            }
+            
     		if(((RotableImageView) imageView).isRotated()) {
-    	    	absoluteX = imagePositionInAnchorPane.getX(); 
-        	    absoluteY = imagePositionInAnchorPane.getY() + (imageView.getFitWidth()/2);
         	    rotate = new Rotate(-90, imageView.getFitWidth() / 2, imageView.getFitHeight() / 2);
         	    ((RotableImageView) imageView).setRotated(false);
     	    }
     	    else {
-    	    	absoluteX = imagePositionInAnchorPane.getX() + (imageView.getFitWidth()/2);
-        	    absoluteY = imagePositionInAnchorPane.getY();
-        	    ((RotableImageView) imageView).setRotated(true);
         	    rotate = new Rotate(90, imageView.getFitWidth() / 2, imageView.getFitHeight() / 2);
+        	    ((RotableImageView) imageView).setRotated(true);
     	    }
     		
- 
-    		
-            imageView.getTransforms().add(rotate);
+	        imageView.getTransforms().add(rotate);
+	        
+            
+            if(imageView.getId().equals("Corveta") || imageView.getId().equals("Fragata")) {
+            	if(((RotableImageView) imageView).isRotated()){
+            		imageView.setTranslateX(snapToGrid(imageView.getTranslateX()) + 28);
+                    imageView.setTranslateY(snapToGrid(imageView.getTranslateY()));
+            	}
+                else{
+                	imageView.setTranslateX(snapToGrid(imageView.getTranslateX()) + 3);
+                    imageView.setTranslateY(snapToGrid(imageView.getTranslateY()) + 25);
+                }
+            } 
+  
+            else {
+            	imageView.setTranslateX(snapToGrid(imageView.getTranslateX()) + 3);
+                imageView.setTranslateY(snapToGrid(imageView.getTranslateY()));
+                System.out.println("Giro X " + snapToGrid(imageView.getTranslateX())); 
+                System.out.println("Giro Y " + snapToGrid(imageView.getTranslateY()));
+            }
+            
+            
     	}
     }
 
@@ -258,57 +259,72 @@ public class TelaPrincipalController implements Initializable {
     	
 	    	isDragging = false;
 	        ImageView imageView = (ImageView) event.getSource();
-	
+	        
+	        
+	        // Pegando posição atual
 	        double currentX = imageView.getTranslateX();
 	        double currentY = imageView.getTranslateY();
-	
+	        
+
+	        
+	        // Ajustando a posição ao grid
 	        double snappedX = snapToGrid(currentX);
 	        double snappedY = snapToGrid(currentY);
 	        
-	        Point2D imagePositionInScene = imageView.localToScene(0, 0);
-	        Point2D imagePositionInAnchorPane = imageView.getScene().getRoot().lookup("#anchorPane").localToScene(imagePositionInScene);
-	
-	        double absoluteX;
-    	    double absoluteY;
-    	    
-    	    if(((RotableImageView) imageView).isRotated()) {
-    	    	absoluteX = imagePositionInAnchorPane.getX();
-        	    absoluteY = imagePositionInAnchorPane.getY() + (imageView.getFitWidth()/2);
-    	    }
-    	    else {
-    	    	absoluteX = imagePositionInAnchorPane.getX() + (imageView.getFitWidth()/2);
-        	    absoluteY = imagePositionInAnchorPane.getY();
-    	    }
-	       
-	
-	        System.out.println("Largura ==== " + imageView.getFitWidth());
-	        
-	        System.out.println("Altura ==== " + imageView.getFitHeight());
-	        System.out.println("Imagem absoluta X: " + absoluteX);
-	        System.out.println("Imagem absoluta Y: " + absoluteY);
+
 	
 		     
-		     imageView.setTranslateX(snappedX);
-	         imageView.setTranslateY(snappedY);
+	        if (!isInGridPane(snappedX, snappedY, imageView)) {
+	            imageView.setTranslateX(initialTranslateX);
+	            imageView.setTranslateY(initialTranslateY);
+	            System.out.println("NÃO É POSSÍVEL POSICIONAR A IMAGEM FORA DO GRID");
+	        } else {
+	        	if(((RotableImageView) imageView).isRotated()) {
+	        	    if(imageView.getId().equals("Corveta") || imageView.getId().equals("Fragata")) {
+	        	    	snappedX += 25;
+	        	    }
+	    	    }
+	    	    else {
+	        	    if(imageView.getId().equals("Corveta") || imageView.getId().equals("Fragata")) {
+	        	    	snappedY += 25;
+	        	    }
+	    	    }
+	            imageView.setTranslateX(snappedX + 3);
+	            imageView.setTranslateY(snappedY);
+	            System.out.println("imagem posicionada");
+	        }
 	
     	}
     }
 
-//    private boolean isInGridPane(double x, double y, GridPane gridPane) {
-//        double gridPaneX = 0;
-//        double gridPaneY = 0;
-//        double gridPaneWidth = gridPane.getWidth() - 40;
-//        double gridPaneHeight = gridPane.getHeight();
-//        
-//        System.out.println("X = " + x);
-//        System.out.println("Y = " + y);
-//        
-//        System.out.println("Cmp Width = " + gridPane.getWidth());
-//        System.out.println("Cmp Heigth = " + gridPane.getHeight());
-//        
-//        return x >= gridPaneX && x <= gridPaneX + gridPaneWidth
-//                && y >= gridPaneY && y <= gridPaneY + gridPaneHeight;
-//    }
+    private boolean isInGridPane(double x, double y, ImageView imageView) {
+
+        if(x < 0 || y < 0 || x >= 500 || y >= 500) {
+        	return false;
+        } else if(imageView.getId().equals("Corveta") && (y > 450) && !((RotableImageView) imageView).isRotated()){
+        	return false;
+    	}else if(imageView.getId().equals("Corveta") && (x > 450) && ((RotableImageView) imageView).isRotated()){
+        	return false;
+        }
+        else if(imageView.getId().equals("Submarino") && (y < 50 || y > 400) && !((RotableImageView) imageView).isRotated()){
+        	return false;
+    	}else if(imageView.getId().equals("Submarino") && (x < 50 || x > 400) && ((RotableImageView) imageView).isRotated()){
+        	return false;
+        }else if(imageView.getId().equals("Fragata") && (y < 50 || y > 350) && !((RotableImageView) imageView).isRotated()){
+        	return false;
+    	}else if(imageView.getId().equals("Fragata") && (x < 50 || x > 350) && ((RotableImageView) imageView).isRotated()){
+        	return false;
+        }
+    	else if(imageView.getId().equals("Destroyer") && (y < 100 || y > 350) && !((RotableImageView) imageView).isRotated()){
+        	return false;
+    	}else if(imageView.getId().equals("Destroyer") && (x < 100 || x > 350) && ((RotableImageView) imageView).isRotated()){
+        	return false;
+        }
+        else {
+        	return true;
+        }
+        
+    }
 
     private double snapToGrid(double coordinate) {
         return Math.floor(coordinate / 50) * 50;
@@ -316,11 +332,11 @@ public class TelaPrincipalController implements Initializable {
 
     @FXML
     private void onMouseMoved(MouseEvent event) {
-        Point2D mousePoint = new Point2D(event.getSceneX(), event.getSceneY());
-        Point2D anchorPanePoint = anchorPane.sceneToLocal(mousePoint);
-
-        double mouseX = anchorPanePoint.getX();
-        double mouseY = anchorPanePoint.getY();
+//        Point2D mousePoint = new Point2D(event.getSceneX(), event.getSceneY());
+//        Point2D anchorPanePoint = anchorPane.sceneToLocal(mousePoint);
+//
+//        double mouseX = anchorPanePoint.getX();
+//        double mouseY = anchorPanePoint.getY();
 
 //        System.out.println("Mouse X: " + mouseX);
 //        System.out.println("Mouse Y: " + mouseY);

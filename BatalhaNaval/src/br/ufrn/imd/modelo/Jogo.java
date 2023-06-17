@@ -1,5 +1,12 @@
 package br.ufrn.imd.modelo;
 
+import java.util.Iterator;
+import java.util.List;
+
+import javafx.scene.Node;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+
 public class Jogo {
 	
 	private boolean comecou;
@@ -10,9 +17,6 @@ public class Jogo {
 		comecou = false;
 	}
 	
-	public void colocarNavios() {
-		
-	}
 	
 	public void setCampoJogador(Campo campoJogador) {
 		this.campoJogador = campoJogador;
@@ -26,6 +30,9 @@ public class Jogo {
 		this.comecou = comecou;
 	}
 	
+	
+	public void colocarNavios(List<ImageView> imageViewsJogador) {
+	}
 	
 
 }

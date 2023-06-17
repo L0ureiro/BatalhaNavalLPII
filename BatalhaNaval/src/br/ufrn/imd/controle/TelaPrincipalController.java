@@ -280,7 +280,19 @@ public class TelaPrincipalController implements Initializable {
     @FXML
     public void iniciarJogo() {
         jogo.setComecou(true);
-        jogo.colocarNavios();
+        
+        for(ImageView imageView : imageViewsJogador) {
+        	System.out.println("X == " + (int) imageView.getTranslateX()/50);
+        	System.out.println("y == " + (int) imageView.getTranslateY()/50);
+        	System.out.println("");
+        	((RotableImageView) imageView).setPosicaoImageXY((int) imageView.getTranslateX()/50, (int) imageView.getTranslateY()/50);
+        }
+        
+        jogo.colocarNavios(imageViewsJogador);
+        for (ImageView imageView : imageViewsJogador) {
+            imageView.setMouseTransparent(true);
+        }
+        
     }
 
     private void onImagePressed(MouseEvent event) {
@@ -404,7 +416,7 @@ public class TelaPrincipalController implements Initializable {
 	        double currentX = imageView.getTranslateX();
 	        double currentY = imageView.getTranslateY();
 	        
-
+	        
 	        
 	        // Ajustando a posição ao grid
 	        double snappedX = snapToGrid(currentX);

@@ -7,14 +7,17 @@ import java.util.ResourceBundle;
 
 import br.ufrn.imd.modelo.Campo;
 import br.ufrn.imd.modelo.Jogo;
+import br.ufrn.imd.modelo.RotableImageView;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -22,6 +25,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
+import javafx.scene.layout.AnchorPane;
 
 public class TelaPrincipalController implements Initializable {
 
@@ -51,8 +55,8 @@ public class TelaPrincipalController implements Initializable {
     private double initialTranslateY;
 
     private boolean isDragging;
-    
-    private boolean isRotating = false;
+
+	@FXML AnchorPane anchorPane;
 
     public TelaPrincipalController() {
         System.out.println("Primeiro o construtor");
@@ -75,9 +79,6 @@ public class TelaPrincipalController implements Initializable {
         }
     }
     
-    public void setRotating(boolean rotating) {
-        isRotating = rotating;
-    }
     
     public void configurarValoresIniciais() {
         System.out.println("Valores");
@@ -125,19 +126,15 @@ public class TelaPrincipalController implements Initializable {
 
         imageViews = createImageViews();
     }
-
+    
     private List<ImageView> createImageViews() {
         List<ImageView> imageViews = new ArrayList<>();
         
-        
-        
+       
         // Corveta 1x2
         Image image = new Image(getClass().getResourceAsStream("/images/Corveta1x2.png"));
         
-        ImageView imageView = new ImageView(image);
-        
-        Rotate rotate = new Rotate(90, image.getWidth() / 2, image.getHeight() / 2);
-        imageView.getTransforms().add(rotate);
+        ImageView imageView = new RotableImageView(image);
         
         imageView.setFitWidth(45);
         imageView.setFitHeight(90);
@@ -145,10 +142,7 @@ public class TelaPrincipalController implements Initializable {
         
         // Submarino 1x3
         image = new Image(getClass().getResourceAsStream("/images/Submarino1x3.png"));
-        imageView = new ImageView(image);
-        
-        rotate = new Rotate(90, image.getWidth() / 2, image.getHeight() / 2);
-        imageView.getTransforms().add(rotate);
+        imageView = new RotableImageView(image);
         
         imageView.setFitWidth(45);
         imageView.setFitHeight(140);
@@ -156,10 +150,7 @@ public class TelaPrincipalController implements Initializable {
         
         // Fragata 1x4
         image = new Image(getClass().getResourceAsStream("/images/Fragata1x4.png"));
-        imageView = new ImageView(image);
-        
-        rotate = new Rotate(90, image.getWidth() / 2, image.getHeight() / 2);
-        imageView.getTransforms().add(rotate);
+        imageView = new RotableImageView(image);
         
         imageView.setFitWidth(45);
         imageView.setFitHeight(190);
@@ -167,10 +158,7 @@ public class TelaPrincipalController implements Initializable {
         
         // Destroyer 1x5
         image = new Image(getClass().getResourceAsStream("/images/Destroyer1x5.png"));
-        imageView = new ImageView(image);
-        
-        rotate = new Rotate(90, image.getWidth() / 2, image.getHeight() / 2);
-        imageView.getTransforms().add(rotate);
+        imageView = new RotableImageView(image);
         
         imageView.setFitWidth(45);
         imageView.setFitHeight(240);
@@ -180,6 +168,7 @@ public class TelaPrincipalController implements Initializable {
         return imageViews;
     }
 
+
     @FXML
     public void iniciarJogo() {
         jogo.setComecou(true);
@@ -187,27 +176,71 @@ public class TelaPrincipalController implements Initializable {
     }
 
     private void onImagePressed(MouseEvent event) {
-        ImageView imageView = (ImageView) event.getSource();
-        initialX = event.getSceneX();
-        initialY = event.getSceneY();
+    	ImageView imageView = (ImageView) event.getSource();
+    	if (event.getButton() == MouseButton.PRIMARY) {
+    	    initialX = event.getSceneX();
+    	    initialY = event.getSceneY();
 
-        initialTranslateX = imageView.getTranslateX();
-        initialTranslateY = imageView.getTranslateY();
+    	    initialTranslateX = imageView.getTranslateX();
+    	    initialTranslateY = imageView.getTranslateY();
 
-        offsetX = event.getSceneX() - imageView.getTranslateX();
-        offsetY = event.getSceneY() - imageView.getTranslateY();
-        
-        isDragging = true;
-        isRotating = false;
+    	    offsetX = event.getSceneX() - imageView.getTranslateX();
+    	    offsetY = event.getSceneY() - imageView.getTranslateY();
+    	    
+    	    Point2D imagePositionInScene = imageView.localToScene(0, 0);
+    	    Point2D imagePositionInAnchorPane = imageView.getScene().getRoot().lookup("#anchorPane").localToScene(imagePositionInScene);
+    	    
+    	    double absoluteX;
+    	    double absoluteY;
+    	    
+    	    if(((RotableImageView) imageView).isRotated()) {
+    	    	absoluteX = imagePositionInAnchorPane.getX();
+        	    absoluteY = imagePositionInAnchorPane.getY() + (imageView.getFitWidth()/2);
+    	    }
+    	    else {
+    	    	absoluteX = imagePositionInAnchorPane.getX() + (imageView.getFitWidth()/2);
+        	    absoluteY = imagePositionInAnchorPane.getY();
+    	    }
+    	    
+    	    System.out.println("Largura ==== " + imageView.getFitWidth());
+
+    	    System.out.println("Imagem absoluta X: " + absoluteX);
+    	    System.out.println("Imagem absoluta Y: " + absoluteY);
+    	    
+    	    isDragging = true;
+    	}
+    	
+    	if (event.getButton() == MouseButton.SECONDARY) {    		
+    		double absoluteX;
+    	    double absoluteY;
+    	    
+    	    Rotate rotate;
+    		
+    	    Point2D imagePositionInScene = imageView.localToScene(0, 0);
+    	    Point2D imagePositionInAnchorPane = imageView.getScene().getRoot().lookup("#anchorPane").localToScene(imagePositionInScene);
+    	    
+    		if(((RotableImageView) imageView).isRotated()) {
+    	    	absoluteX = imagePositionInAnchorPane.getX(); 
+        	    absoluteY = imagePositionInAnchorPane.getY() + (imageView.getFitWidth()/2);
+        	    rotate = new Rotate(-90, imageView.getFitWidth() / 2, imageView.getFitHeight() / 2);
+        	    ((RotableImageView) imageView).setRotated(false);
+    	    }
+    	    else {
+    	    	absoluteX = imagePositionInAnchorPane.getX() + (imageView.getFitWidth()/2);
+        	    absoluteY = imagePositionInAnchorPane.getY();
+        	    ((RotableImageView) imageView).setRotated(true);
+        	    rotate = new Rotate(90, imageView.getFitWidth() / 2, imageView.getFitHeight() / 2);
+    	    }
+    		
+ 
+    		
+            imageView.getTransforms().add(rotate);
+    	}
     }
+
 
     private void onImageDragged(MouseEvent event) {
     	ImageView imageView = (ImageView) event.getSource();
-    	
-    	if (isRotating && event.isPrimaryButtonDown()) {
-        	System.out.println("Roda ai");
-            imageView.setRotate(imageView.getRotate() + 90);
-        }
     	
     	if (isDragging) {
             
@@ -221,50 +254,75 @@ public class TelaPrincipalController implements Initializable {
     }
 
     private void onImageReleased(MouseEvent event) {
-        isDragging = false;
-        ImageView imageView = (ImageView) event.getSource();
-        
-        double currentX = imageView.getTranslateX();
-        double currentY = imageView.getTranslateY();
-
-        double snappedX = snapToGrid(currentX);
-        double snappedY = snapToGrid(currentY);
-        
-        System.out.println("scale x = " +  snappedX);
-        
-        System.out.println("width = " + imageView.getFitWidth()/8);
-
-//        snappedX += 22;
-//        snappedY += 10; // ajuste de posicionamento para o gridPane
-
-        if (!isInGridPane(snappedX, snappedY, campoJogador)) {
-            imageView.setTranslateX(initialTranslateX);
-            imageView.setTranslateY(initialTranslateY);
-            System.out.println("A imagem foi reposicionada para a posição anterior.");
-        } else {
-            imageView.setTranslateX(snappedX);
-            imageView.setTranslateY(snappedY);
-            System.out.println("A imagem foi posicionada corretamente.");
-        }
+    	if (event.getButton() == MouseButton.PRIMARY) {  	
+    	
+	    	isDragging = false;
+	        ImageView imageView = (ImageView) event.getSource();
+	
+	        double currentX = imageView.getTranslateX();
+	        double currentY = imageView.getTranslateY();
+	
+	        double snappedX = snapToGrid(currentX);
+	        double snappedY = snapToGrid(currentY);
+	        
+	        Point2D imagePositionInScene = imageView.localToScene(0, 0);
+	        Point2D imagePositionInAnchorPane = imageView.getScene().getRoot().lookup("#anchorPane").localToScene(imagePositionInScene);
+	
+	        double absoluteX;
+    	    double absoluteY;
+    	    
+    	    if(((RotableImageView) imageView).isRotated()) {
+    	    	absoluteX = imagePositionInAnchorPane.getX();
+        	    absoluteY = imagePositionInAnchorPane.getY() + (imageView.getFitWidth()/2);
+    	    }
+    	    else {
+    	    	absoluteX = imagePositionInAnchorPane.getX() + (imageView.getFitWidth()/2);
+        	    absoluteY = imagePositionInAnchorPane.getY();
+    	    }
+	       
+	
+	        System.out.println("Largura ==== " + imageView.getFitWidth());
+	        
+	        System.out.println("Altura ==== " + imageView.getFitHeight());
+	        System.out.println("Imagem absoluta X: " + absoluteX);
+	        System.out.println("Imagem absoluta Y: " + absoluteY);
+	
+		     
+		     imageView.setTranslateX(snappedX);
+	         imageView.setTranslateY(snappedY);
+	
+    	}
     }
 
-    private boolean isInGridPane(double x, double y, GridPane gridPane) {
-        double gridPaneX = 0;
-        double gridPaneY = 0;
-        double gridPaneWidth = gridPane.getWidth() - 40;
-        double gridPaneHeight = gridPane.getHeight();
-        
-        System.out.println("X = " + x);
-        System.out.println("Y = " + y);
-        
-        System.out.println("Cmp Width = " + gridPane.getWidth());
-        System.out.println("Cmp Heigth = " + gridPane.getHeight());
-        
-        return x >= gridPaneX && x <= gridPaneX + gridPaneWidth
-                && y >= gridPaneY && y <= gridPaneY + gridPaneHeight;
-    }
+//    private boolean isInGridPane(double x, double y, GridPane gridPane) {
+//        double gridPaneX = 0;
+//        double gridPaneY = 0;
+//        double gridPaneWidth = gridPane.getWidth() - 40;
+//        double gridPaneHeight = gridPane.getHeight();
+//        
+//        System.out.println("X = " + x);
+//        System.out.println("Y = " + y);
+//        
+//        System.out.println("Cmp Width = " + gridPane.getWidth());
+//        System.out.println("Cmp Heigth = " + gridPane.getHeight());
+//        
+//        return x >= gridPaneX && x <= gridPaneX + gridPaneWidth
+//                && y >= gridPaneY && y <= gridPaneY + gridPaneHeight;
+//    }
 
     private double snapToGrid(double coordinate) {
         return Math.floor(coordinate / 50) * 50;
+    }
+
+    @FXML
+    private void onMouseMoved(MouseEvent event) {
+        Point2D mousePoint = new Point2D(event.getSceneX(), event.getSceneY());
+        Point2D anchorPanePoint = anchorPane.sceneToLocal(mousePoint);
+
+        double mouseX = anchorPanePoint.getX();
+        double mouseY = anchorPanePoint.getY();
+
+//        System.out.println("Mouse X: " + mouseX);
+//        System.out.println("Mouse Y: " + mouseY);
     }
 }

@@ -100,13 +100,13 @@ public class TelaPrincipalController implements Initializable {
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
 
-                Image image1 = new Image("file:///C:/Users/carlo/OneDrive/Documentos/lp2/projetoLp2/BatalhaNavalLPII/BatalhaNaval/src/images/ocean.png");
+                Image image1 = new Image(getClass().getResourceAsStream("/images/ocean.png"));
                 ImageView imageView1 = new RotableImageView(image1);
                 
                 imageView1.setFitWidth(cellWidth);
                 imageView1.setFitHeight(cellHeight);
                 
-                Image image2 = new Image("file:///C:/Users/carlo/OneDrive/Documentos/lp2/projetoLp2/BatalhaNavalLPII/BatalhaNaval/src/images/ocean.png");
+                Image image2 = new Image(getClass().getResourceAsStream("/images/ocean.png"));
                 ImageView imageView2 = new RotableImageView(image2);
                 
                 imageView2.setFitWidth(cellWidth);

@@ -28,10 +28,15 @@
             </Menu>
          </menus>
       </MenuBar>
+      <GridPane fx:id="campoJogadorAUX" layoutX="27.0" layoutY="80.0" maxHeight="500.0" maxWidth="500.0" minHeight="500.0" minWidth="500.0" prefHeight="500.0" prefWidth="500.0"/>
       <GridPane fx:id="campoJogador" layoutX="27.0" layoutY="80.0" maxHeight="500.0" maxWidth="500.0" minHeight="500.0" minWidth="500.0" prefHeight="500.0" prefWidth="500.0" style="-fx-border-color: black;">
+      </GridPane>
+      <GridPane fx:id="campoComputadorAUX" layoutX="550.0" layoutY="80.0" maxHeight="500.0" maxWidth="500.0" minHeight="500.0" minWidth="500.0" prefHeight="500.0" prefWidth="500.0">
       </GridPane>
       <GridPane fx:id="campoComputador" layoutX="550.0" layoutY="80.0" maxHeight="500.0" maxWidth="500.0" minHeight="500.0" minWidth="500.0" prefHeight="500.0" prefWidth="500.0" style="-fx-border-color: black;">
       </GridPane>
-      <Button fx:id="botaoInit" layoutX="518.0" layoutY="590.0" mnemonicParsing="false" onAction="#iniciarJogo" text="Jogar" />
+      <Button fx:id="botaoInit" layoutX="527.0" layoutY="590.0" mnemonicParsing="false" onAction="#iniciarJogo" text="Jogar" />
+      
+>>>>>>> branch 'navios-4' of https://github.com/L0ureiro/BatalhaNavalLPII.git
    </children>
 </AnchorPane>

@@ -61,6 +61,10 @@ public class TelaPrincipalController implements Initializable {
 
 	@FXML AnchorPane anchorPane;
 
+	@FXML GridPane campoJogadorAUX;
+
+	@FXML GridPane campoComputadorAUX;
+
     public TelaPrincipalController() {
         System.out.println("Primeiro o construtor");
     }
@@ -93,14 +97,33 @@ public class TelaPrincipalController implements Initializable {
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
+
+                Image image1 = new Image("file:///C:/Users/carlo/OneDrive/Documentos/lp2/projetoLp2/BatalhaNavalLPII/BatalhaNaval/src/images/ocean.png");
+                ImageView imageView1 = new RotableImageView(image1);
+                
+                imageView1.setFitWidth(cellWidth);
+                imageView1.setFitHeight(cellHeight);
+                
+                Image image2 = new Image("file:///C:/Users/carlo/OneDrive/Documentos/lp2/projetoLp2/BatalhaNavalLPII/BatalhaNaval/src/images/ocean.png");
+                ImageView imageView2 = new RotableImageView(image2);
+                
+                imageView2.setFitWidth(cellWidth);
+                imageView2.setFitHeight(cellHeight);
+                
+                campoComputadorAUX.add(imageView1, col, row);
+                campoJogadorAUX.add(imageView2, col, row);
+                
                 Rectangle rec1 = new Celula(cellWidth, cellHeight, new Posicao(col, row));
                 Rectangle rec2 = new Celula(cellWidth, cellHeight, new Posicao(col, row));
-                rec1.setFill(Color.BLUE);
-                rec2.setFill(Color.BLUE);       
+                rec1.setFill(Color.TRANSPARENT);
+                rec2.setFill(Color.TRANSPARENT);
+                
+                
                 campoComputador.add(rec1, col, row);
                 campoJogador.add(rec2, col, row);
             }
         }
+
 
         // Adicione as linhas de grade após adicionar os retângulos
         for (int row = 0; row < 10; row++) {
@@ -219,7 +242,7 @@ public class TelaPrincipalController implements Initializable {
         	    }
     	    }
         	
-        	setShipArea(campoComputador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView, true);
+        	setShipArea(campoComputador, (int)snappedY/50, (int)snappedX/50, Color.TRANSPARENT, imageView, true);
         	
             imageView.setTranslateX(snappedX + 3);
             imageView.setTranslateY(snappedY);     
@@ -320,7 +343,7 @@ public class TelaPrincipalController implements Initializable {
     	    offsetY = event.getSceneY() - imageView.getTranslateY();
     	    
     	    
-    	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.BLUE, imageView, false);
+    	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.TRANSPARENT, imageView, false);
     	    isDragging = true;
     	}
     	
@@ -361,13 +384,13 @@ public class TelaPrincipalController implements Initializable {
             
     		if(((RotableImageView) imageView).isRotated()) {
         	    rotate = new Rotate(-90, imageView.getFitWidth() / 2, imageView.getFitHeight() / 2);
-        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.BLUE, imageView, false);
+        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.TRANSPARENT, imageView, false);
         	    ((RotableImageView) imageView).setRotated(false);
         	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView, true);
     	    }
     	    else {
         	    rotate = new Rotate(90, imageView.getFitWidth() / 2, imageView.getFitHeight() / 2);
-        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.BLUE, imageView, false);
+        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.TRANSPARENT, imageView, false);
         	    ((RotableImageView) imageView).setRotated(true);
         	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView, true);
     	    }
@@ -670,14 +693,32 @@ public class TelaPrincipalController implements Initializable {
 
 	private void onCelulaPressed(MouseEvent event) {
 		Celula celula = (Celula) event.getSource();
+		
+		Image image = new Image(getClass().getResourceAsStream("/images/explosao.png"));
+		ImageView imageViewJogador = new RotableImageView(image);
+		imageViewJogador.setFitHeight(50);
+		imageViewJogador.setFitWidth(50);
+		
+		ImageView imageViewComputador = new RotableImageView(image);
+		imageViewComputador.setFitHeight(50);
+		imageViewComputador.setFitWidth(50);
         
-        celula.setFill(Color.GREEN);
+		
         celula.setAtingido(true);
         
-        jogo.atirar(celula.getPosicaoXY().getX(), celula.getPosicaoXY().getY());
+        int afundado = jogo.atirar(celula.getPosicaoXY().getX(), celula.getPosicaoXY().getY());
         
         if(celula.isTemNavio()) {
-        	celula.setFill(Color.HOTPINK);
+        	campoComputador.add(imageViewComputador, celula.getPosicaoXY().getX(), celula.getPosicaoXY().getY());
+        	System.out.println("X = " + celula.getPosicaoXY().getX() + " Y = " + celula.getPosicaoXY().getY());
+
+        	
+        	if(afundado >= 0) {
+        		imageViewsComputador.get(afundado).setVisible(true);
+        	}
+        	//celula.setFill(Color.HOTPINK);
+        } else {
+        	celula.setFill(Color.GREEN);
         }
         
         Posicao disparoComputador = jogo.disparoComputador();
@@ -687,7 +728,8 @@ public class TelaPrincipalController implements Initializable {
     	if (node2 instanceof Celula) {
         	Celula rectangle = (Celula) node2;
         	if(rectangle.isTemNavio()) {
-        		rectangle.setFill(Color.HOTPINK);
+        		campoJogador.add(imageViewJogador, disparoComputador.getX(), disparoComputador.getY());
+        		//rectangle.setFill(Color.HOTPINK);
             }
         	else {
         		rectangle.setFill(Color.GREEN);

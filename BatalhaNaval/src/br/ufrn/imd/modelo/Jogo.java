@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import java.util.List;
 import java.util.Random;
-
 import javafx.scene.image.ImageView;
 
 public class Jogo {
@@ -59,7 +58,7 @@ public class Jogo {
 
 	public void atirar(int x, int y) {
 		
-		if(computador.disparoRecebido(new Posicao(x, y))) {
+		if(computador.disparoRecebido(new Posicao(x, y)) != null) {
 			
 			System.out.println("Computador Atingido");
 			
@@ -75,9 +74,9 @@ public class Jogo {
 		
         Posicao posicaoDisparo = new Posicao(0, 0);
         
-        if(computador.isAcertou()) {
+        if(!computador.getDisparosAtingidos().isEmpty()) {
         	System.out.println("Entrou aqui!");
-        	
+ 
         	posicaoDisparo = computador.getProximoDisparo();
         } else {
         	do{
@@ -90,22 +89,22 @@ public class Jogo {
 
 	    computador.addDisparo(posicaoDisparo);	
 		
-		
-		if(jogador.disparoRecebido(posicaoDisparo)) {
+	    Navio navio = jogador.disparoRecebido(posicaoDisparo);
+	    
+		if(navio != null) {
 			
-			computador.setAcertou(true);
 			computador.addDisparoAtingido(posicaoDisparo);
-
-			System.out.println("Jogador Atingido");
+			if(navio.isAfundado()) {
+				computador.cleanDisparosAtingidigos();
+			}
 			
 			if(jogador.isDerrotado()) {
 				this.over = true;
 			}
 		} else {
 			computador.removeDisparoAtingido(posicaoDisparo);
-			//computador.setAcertou(false);
 		}
-		
+
 		return posicaoDisparo;
 	}
 	

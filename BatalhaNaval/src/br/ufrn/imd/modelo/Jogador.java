@@ -65,7 +65,7 @@ public class Jogador {
 		
 	}
 
-	public boolean disparoRecebido(Posicao posicao) {
+	public Navio disparoRecebido(Posicao posicao) {
 		for(Navio navio : navios) {
 			
 			
@@ -78,11 +78,11 @@ public class Jogador {
 					System.out.println("Navio afundado! " + navio.getTamanho());
 					navios.remove(navio);
 				}
-				return true;
+				return navio;
 			} 
 		}
 
-		return false;
+		return null;
 	}
 
 	public Boolean isDerrotado() {

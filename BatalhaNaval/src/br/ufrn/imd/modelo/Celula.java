@@ -6,6 +6,7 @@ public class Celula extends Rectangle {
 	
 	private boolean temNavio;
 	private boolean atingido;
+	private Posicao posicaoXY;
 	
 	public Celula()  {
 		
@@ -14,11 +15,12 @@ public class Celula extends Rectangle {
 		
 	}
 
-	public Celula(double cellWidth, double cellHeight) {
+	public Celula(double cellWidth, double cellHeight, Posicao posicaoXY) {
 		super(cellWidth, cellHeight);
 		
 		temNavio = false;
 		atingido = false;
+		this.posicaoXY = posicaoXY;
 	}
 
 	public boolean isTemNavio() {
@@ -35,6 +37,14 @@ public class Celula extends Rectangle {
 
 	public void setAtingido(boolean atingido) {
 		this.atingido = atingido;
+	}
+
+	public Posicao getPosicaoXY() {
+		return posicaoXY;
+	}
+
+	public void setPosicaoXY(Posicao posicaoXY) {
+		this.posicaoXY = posicaoXY;
 	}
 	
 	

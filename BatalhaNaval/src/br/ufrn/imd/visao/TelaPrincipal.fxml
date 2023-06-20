@@ -37,6 +37,5 @@
       </GridPane>
       <Button fx:id="botaoInit" layoutX="527.0" layoutY="590.0" mnemonicParsing="false" onAction="#iniciarJogo" text="Jogar" />
       
->>>>>>> branch 'navios-4' of https://github.com/L0ureiro/BatalhaNavalLPII.git
    </children>
 </AnchorPane>

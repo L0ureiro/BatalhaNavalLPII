@@ -15,6 +15,8 @@ import br.ufrn.imd.modelo.RotableImageView;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -191,7 +193,7 @@ public class TelaPrincipalController implements Initializable {
         	    }
     	    }
         	
-        	setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView, true);
+        	setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.TRANSPARENT, imageView, true);
         	
             imageView.setTranslateX(snappedX + 3);
             imageView.setTranslateY(snappedY);     
@@ -386,13 +388,13 @@ public class TelaPrincipalController implements Initializable {
         	    rotate = new Rotate(-90, imageView.getFitWidth() / 2, imageView.getFitHeight() / 2);
         	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.TRANSPARENT, imageView, false);
         	    ((RotableImageView) imageView).setRotated(false);
-        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView, true);
+        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.TRANSPARENT, imageView, true);
     	    }
     	    else {
         	    rotate = new Rotate(90, imageView.getFitWidth() / 2, imageView.getFitHeight() / 2);
         	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.TRANSPARENT, imageView, false);
         	    ((RotableImageView) imageView).setRotated(true);
-        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView, true);
+        	    setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.TRANSPARENT, imageView, true);
     	    }
     		
     		
@@ -461,7 +463,7 @@ public class TelaPrincipalController implements Initializable {
 	            imageView.setTranslateY(initialTranslateY);
 	          
 
-	            setShipArea(campoJogador, (int)initialTranslateY/50, (int)initialTranslateX/50, Color.RED, imageView, true);
+	            setShipArea(campoJogador, (int)initialTranslateY/50, (int)initialTranslateX/50, Color.TRANSPARENT, imageView, true);
 	            System.out.println("NÃO É POSSÍVEL POSICIONAR A IMAGEM FORA DO GRID");
 	        } else {
 	        	
@@ -478,7 +480,7 @@ public class TelaPrincipalController implements Initializable {
 	        	    }
 	    	    }        	
 	        	
-	        	setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.RED, imageView, true);
+	        	setShipArea(campoJogador, (int)snappedY/50, (int)snappedX/50, Color.TRANSPARENT, imageView, true);
 	        	
 	            imageView.setTranslateX(snappedX + 3);
 	            imageView.setTranslateY(snappedY);
@@ -695,13 +697,23 @@ public class TelaPrincipalController implements Initializable {
 		Celula celula = (Celula) event.getSource();
 		
 		Image image = new Image(getClass().getResourceAsStream("/images/explosao.png"));
-		ImageView imageViewJogador = new RotableImageView(image);
+		Image imageSplash = new Image(getClass().getResourceAsStream("/images/crosshair062.png"));
+		
+		ImageView imageViewJogador = new RotableImageView(imageSplash);
 		imageViewJogador.setFitHeight(50);
 		imageViewJogador.setFitWidth(50);
 		
-		ImageView imageViewComputador = new RotableImageView(image);
+		ImageView imageViewComputador = new RotableImageView(imageSplash);
 		imageViewComputador.setFitHeight(50);
 		imageViewComputador.setFitWidth(50);
+		
+		ImageView imageViewJogadorAtingido = new RotableImageView(image);
+		imageViewJogadorAtingido.setFitHeight(50);
+		imageViewJogadorAtingido.setFitWidth(50);
+		
+		ImageView imageViewComputadorAtingido = new RotableImageView(image);
+		imageViewComputadorAtingido.setFitHeight(50);
+		imageViewComputadorAtingido.setFitWidth(50);
         
 		
         celula.setAtingido(true);
@@ -709,7 +721,7 @@ public class TelaPrincipalController implements Initializable {
         int afundado = jogo.atirar(celula.getPosicaoXY().getX(), celula.getPosicaoXY().getY());
         
         if(celula.isTemNavio()) {
-        	campoComputador.add(imageViewComputador, celula.getPosicaoXY().getX(), celula.getPosicaoXY().getY());
+        	campoComputador.add(imageViewComputadorAtingido, celula.getPosicaoXY().getX(), celula.getPosicaoXY().getY());
         	System.out.println("X = " + celula.getPosicaoXY().getX() + " Y = " + celula.getPosicaoXY().getY());
 
         	
@@ -718,8 +730,33 @@ public class TelaPrincipalController implements Initializable {
         	}
         	//celula.setFill(Color.HOTPINK);
         } else {
-        	celula.setFill(Color.GREEN);
+        	campoComputador.add(imageViewComputador, celula.getPosicaoXY().getX(), celula.getPosicaoXY().getY());
+        	//celula.setFill(Color.GREEN);
         }
+        
+        if(jogo.isOver()) {
+        	Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Fim do Jogo");
+            alert.setHeaderText(null);
+            alert.setContentText("O jogo acabou! Parabéns você venceu!");
+            alert.showAndWait();
+        	
+        	for (int row = 0; row < 10; row++) {
+                for (int col = 0; col < 10; col++) {
+                	Node node = getNodeByRowColumnIndex(row, col, campoComputador);
+                	
+                	if (node instanceof Celula) {
+                    	Celula rectangle = (Celula) node;
+                    	rectangle.setMouseTransparent(true);
+                    }
+                }
+        	} 
+        	System.out.println("ACABOU");
+        	
+        	return;
+        }
+        
+        
         
         Posicao disparoComputador = jogo.disparoComputador();
         
@@ -728,17 +765,24 @@ public class TelaPrincipalController implements Initializable {
     	if (node2 instanceof Celula) {
         	Celula rectangle = (Celula) node2;
         	if(rectangle.isTemNavio()) {
-        		campoJogador.add(imageViewJogador, disparoComputador.getX(), disparoComputador.getY());
+        		campoJogador.add(imageViewJogadorAtingido, disparoComputador.getX(), disparoComputador.getY());
         		//rectangle.setFill(Color.HOTPINK);
             }
         	else {
-        		rectangle.setFill(Color.GREEN);
+        		campoJogador.add(imageViewJogador, disparoComputador.getX(), disparoComputador.getY());
+        		//rectangle.setFill(Color.GREEN);
         	}
         }
         
         celula.setMouseTransparent(true);
         
         if(jogo.isOver()) {
+        	Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Fim do Jogo");
+            alert.setHeaderText(null);
+            alert.setContentText("O jogo acabou! Que pena você perdeu =(");
+            alert.showAndWait();
+        	
         	for (int row = 0; row < 10; row++) {
                 for (int col = 0; col < 10; col++) {
                 	Node node = getNodeByRowColumnIndex(row, col, campoComputador);
@@ -751,6 +795,8 @@ public class TelaPrincipalController implements Initializable {
             }
         	
         	System.out.println("ACABOU");
+        	
+        	return;
         }
 		
 	}

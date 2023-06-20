@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import br.ufrn.imd.modelo.Campo;
 import br.ufrn.imd.modelo.Celula;
 import br.ufrn.imd.modelo.Jogo;
+import br.ufrn.imd.modelo.Posicao;
 import br.ufrn.imd.modelo.RotableImageView;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -86,22 +87,16 @@ public class TelaPrincipalController implements Initializable {
         System.out.println("Valores");
 
         jogo = new Jogo();
-        Campo modeloJog = new Campo();
-        Campo modeloCmp = new Campo();
-
-        jogo.setCampoComputador(modeloCmp);
-        jogo.setCampoJogador(modeloJog);
 
         double cellWidth = 50;
         double cellHeight = 50;
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-                Rectangle rec1 = new Celula(cellWidth, cellHeight);
-                Rectangle rec2 = new Celula(cellWidth, cellHeight);
+                Rectangle rec1 = new Celula(cellWidth, cellHeight, new Posicao(col, row));
+                Rectangle rec2 = new Celula(cellWidth, cellHeight, new Posicao(col, row));
                 rec1.setFill(Color.BLUE);
-                rec2.setFill(Color.BLUE);
-                rec1.setOnMousePressed(this::onCelulaPressed);
+                rec2.setFill(Color.BLUE);       
                 campoComputador.add(rec1, col, row);
                 campoJogador.add(rec2, col, row);
             }
@@ -130,9 +125,7 @@ public class TelaPrincipalController implements Initializable {
         imageViewsJogador = createImageViews();
 
         Random random = new Random();
-        
-        Random rotacao = new Random();
-        
+     
         Rotate rotate = null;
         
         for (ImageView imageView : imageViewsJogador) {
@@ -141,7 +134,7 @@ public class TelaPrincipalController implements Initializable {
             double snappedX;
             double snappedY;
             
-            Boolean rdmRotacao = rotacao.nextBoolean();
+            Boolean rdmRotacao = random.nextBoolean();
             
             do {
             	((RotableImageView) imageView).setRotated(false);     	
@@ -193,7 +186,7 @@ public class TelaPrincipalController implements Initializable {
             double snappedX;
             double snappedY;
             
-            Boolean rdmRotacao = rotacao.nextBoolean();
+            Boolean rdmRotacao = random.nextBoolean();
             
             do {
             	((RotableImageView) imageView).setRotated(false);     	
@@ -281,18 +274,34 @@ public class TelaPrincipalController implements Initializable {
     public void iniciarJogo() {
         jogo.setComecou(true);
         
+        botaoInit.setMouseTransparent(true);
+        
+        for (int row = 0; row < 10; row++) {
+            for (int col = 0; col < 10; col++) {
+            	Node node = getNodeByRowColumnIndex(row, col, campoComputador);
+            	
+            	if (node instanceof Celula) {
+                	Celula rectangle = (Celula) node;
+                	rectangle.setOnMousePressed(this::onCelulaPressed);
+                }
+            }
+        }
+        
         for(ImageView imageView : imageViewsJogador) {
-        	System.out.println("X == " + (int) imageView.getTranslateX()/50);
-        	System.out.println("y == " + (int) imageView.getTranslateY()/50);
-        	System.out.println("");
         	((RotableImageView) imageView).setPosicaoImageXY((int) imageView.getTranslateX()/50, (int) imageView.getTranslateY()/50);
         }
         
-        jogo.colocarNavios(imageViewsJogador);
+        
+        for(ImageView imageView : imageViewsComputador) {
+        	((RotableImageView) imageView).setPosicaoImageXY((int) imageView.getTranslateX()/50, (int) imageView.getTranslateY()/50);
+        }
+        
+        jogo.colocarNavios(imageViewsJogador, imageViewsComputador);
+
         for (ImageView imageView : imageViewsJogador) {
             imageView.setMouseTransparent(true);
         }
-        
+
     }
 
     private void onImagePressed(MouseEvent event) {
@@ -545,49 +554,49 @@ public class TelaPrincipalController implements Initializable {
 		return false;
 	}
 
-	private void setShipArea(GridPane campo, int i, int j, Color color, ImageView imageView, boolean ocupado) {
+	private void setShipArea(GridPane campo, int i, int j, Color color, ImageView imageView, boolean isOcupado) {
         
         if(((RotableImageView) imageView).isRotated()) {
         	if(imageView.getId().equals("Corveta")) {
-        		setRectangleBackground(campo, i, j, color, imageView, ocupado);
-        		setRectangleBackground(campo, i, j+1, color, imageView, ocupado);
+        		setRectangleBackground(campo, i, j, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i, j+1, color, imageView, isOcupado);
         	} else if (imageView.getId().equals("Submarino")) {
-        		setRectangleBackground(campo, i, j-1, color, imageView, ocupado);
-        		setRectangleBackground(campo, i, j, color, imageView, ocupado);
-        		setRectangleBackground(campo, i, j+1, color, imageView, ocupado);
+        		setRectangleBackground(campo, i, j-1, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i, j, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i, j+1, color, imageView, isOcupado);
         	} else if (imageView.getId().equals("Fragata")) {
-        		setRectangleBackground(campo, i, j-1, color, imageView, ocupado);
-        		setRectangleBackground(campo, i, j, color, imageView, ocupado);
-        		setRectangleBackground(campo, i, j+1, color, imageView, ocupado);
-        		setRectangleBackground(campo, i, j+2, color, imageView, ocupado);
+        		setRectangleBackground(campo, i, j-1, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i, j, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i, j+1, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i, j+2, color, imageView, isOcupado);
         	}else if (imageView.getId().equals("Destroyer")) {
-        		setRectangleBackground(campo, i, j-2, color, imageView, ocupado);
-        		setRectangleBackground(campo, i, j-1, color, imageView, ocupado);
-        		setRectangleBackground(campo, i, j, color, imageView, ocupado);
-        		setRectangleBackground(campo, i, j+1, color, imageView, ocupado);
-        		setRectangleBackground(campo, i, j+2, color, imageView, ocupado);
+        		setRectangleBackground(campo, i, j-2, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i, j-1, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i, j, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i, j+1, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i, j+2, color, imageView, isOcupado);
         	}
         	
         } else {
         	if(imageView.getId().equals("Corveta")) {
-        		setRectangleBackground(campo, i, j, color, imageView, ocupado);
-        		setRectangleBackground(campo, 1+i, j, color, imageView, ocupado);
+        		setRectangleBackground(campo, i, j, color, imageView, isOcupado);
+        		setRectangleBackground(campo, 1+i, j, color, imageView, isOcupado);
         	}
         	else if (imageView.getId().equals("Submarino")) {
-        		setRectangleBackground(campo, i-1, j, color, imageView, ocupado);
-        		setRectangleBackground(campo, i, j, color, imageView, ocupado);
-        		setRectangleBackground(campo, i+1, j, color, imageView, ocupado);
+        		setRectangleBackground(campo, i-1, j, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i, j, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i+1, j, color, imageView, isOcupado);
         	} else if (imageView.getId().equals("Fragata")) {
-        		setRectangleBackground(campo, i-1, j, color, imageView, ocupado);
-        		setRectangleBackground(campo, i, j, color, imageView, ocupado);
-        		setRectangleBackground(campo, i+1, j, color, imageView, ocupado);
-        		setRectangleBackground(campo, i+2, j, color, imageView, ocupado);
+        		setRectangleBackground(campo, i-1, j, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i, j, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i+1, j, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i+2, j, color, imageView, isOcupado);
         	} else if (imageView.getId().equals("Destroyer")) {
-        		setRectangleBackground(campo, i-2, j, color, imageView, ocupado);
-        		setRectangleBackground(campo, i-1, j, color, imageView, ocupado);
-        		setRectangleBackground(campo, i, j, color, imageView, ocupado);
-        		setRectangleBackground(campo, i+1, j, color, imageView, ocupado);
-        		setRectangleBackground(campo, i+2, j, color, imageView, ocupado);
+        		setRectangleBackground(campo, i-2, j, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i-1, j, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i, j, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i+1, j, color, imageView, isOcupado);
+        		setRectangleBackground(campo, i+2, j, color, imageView, isOcupado);
         	}
         }
 		
@@ -626,13 +635,13 @@ public class TelaPrincipalController implements Initializable {
         return Math.floor(coordinate / 50) * 50;
     }
     
-    private void setRectangleBackground(GridPane gridPane, int row, int col,  Color color, ImageView imageView, boolean ocupado) {    
+    private void setRectangleBackground(GridPane gridPane, int row, int col,  Color color, ImageView imageView, boolean isOcupado) {    
         
     	Node node = getNodeByRowColumnIndex(row, col, gridPane);
         if (node instanceof Celula) {
         	Celula rectangle = (Celula) node;
             rectangle.setFill(color);
-            rectangle.setTemNavio(ocupado);
+            rectangle.setTemNavio(isOcupado);
         }
     }
     
@@ -659,29 +668,47 @@ public class TelaPrincipalController implements Initializable {
     }
 
 
-    @FXML
-    private void onMouseMoved(MouseEvent event) {
-//        Point2D mousePoint = new Point2D(event.getSceneX(), event.getSceneY());
-//        Point2D anchorPanePoint = anchorPane.sceneToLocal(mousePoint);
-//
-//        double mouseX = anchorPanePoint.getX();
-//        double mouseY = anchorPanePoint.getY();
-
-//        System.out.println("Mouse X: " + mouseX);
-//        System.out.println("Mouse Y: " + mouseY);
-    }
-
 	private void onCelulaPressed(MouseEvent event) {
 		Celula celula = (Celula) event.getSource();
-		
-		double snappedX = snapToGrid(celula.getTranslateX());
-        double snappedY = snapToGrid(celula.getTranslateY());
         
         celula.setFill(Color.GREEN);
         celula.setAtingido(true);
         
+        jogo.atirar(celula.getPosicaoXY().getX(), celula.getPosicaoXY().getY());
+        
         if(celula.isTemNavio()) {
         	celula.setFill(Color.HOTPINK);
+        }
+        
+        Posicao disparoComputador = jogo.disparoComputador();
+        
+        Node node2 = getNodeByRowColumnIndex(disparoComputador.getY(), disparoComputador.getX(), campoJogador);
+    	
+    	if (node2 instanceof Celula) {
+        	Celula rectangle = (Celula) node2;
+        	if(rectangle.isTemNavio()) {
+        		rectangle.setFill(Color.HOTPINK);
+            }
+        	else {
+        		rectangle.setFill(Color.GREEN);
+        	}
+        }
+        
+        celula.setMouseTransparent(true);
+        
+        if(jogo.isOver()) {
+        	for (int row = 0; row < 10; row++) {
+                for (int col = 0; col < 10; col++) {
+                	Node node = getNodeByRowColumnIndex(row, col, campoComputador);
+                	
+                	if (node instanceof Celula) {
+                    	Celula rectangle = (Celula) node;
+                    	rectangle.setMouseTransparent(true);
+                    }
+                }
+            }
+        	
+        	System.out.println("ACABOU");
         }
 		
 	}

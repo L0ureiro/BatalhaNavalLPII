@@ -56,17 +56,25 @@ public class Jogo {
 	}
 
 
-	public void atirar(int x, int y) {
+	public int atirar(int x, int y) {
 		
-		if(computador.disparoRecebido(new Posicao(x, y)) != null) {
+		Navio navio = computador.disparoRecebido(new Posicao(x, y));
+		
+		if(navio != null) {
 			
 			System.out.println("Computador Atingido");
 			
 			if(computador.isDerrotado()) {
 				this.over = true;
 			}
+			
+			if(navio.isAfundado()) {
+				return navio.getTamanho() - 2;
+			}
 		}
-
+		
+		return -1;
+		
 	}
 	
 	public Posicao disparoComputador() {
@@ -106,6 +114,16 @@ public class Jogo {
 		}
 
 		return posicaoDisparo;
+	}
+
+
+	public Computador getComputador() {
+		return computador;
+	}
+
+
+	public void setComputador(Computador computador) {
+		this.computador = computador;
 	}
 	
 

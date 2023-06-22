@@ -89,20 +89,7 @@ public class TelaPrincipalController implements Initializable {
      */
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-
-        imageViewsJogador = new ArrayList<>();
-        
-        imageViewsComputador = new ArrayList<>();
-        
-        jogo = new Jogo();
-
         configurarValoresIniciais();
-
-        for (ImageView imageView : imageViewsJogador) {
-            imageView.setOnMousePressed(this::onImagePressed);
-            imageView.setOnMouseDragged(this::onImageDragged);
-            imageView.setOnMouseReleased(this::onImageReleased);
-        }
     }
     
     /**
@@ -111,7 +98,9 @@ public class TelaPrincipalController implements Initializable {
      * 
      */
     public void configurarValoresIniciais() {
-
+    	
+    	jogo = new Jogo();
+    	
         double cellWidth = 50;
         double cellHeight = 50;
 
@@ -163,11 +152,21 @@ public class TelaPrincipalController implements Initializable {
             ColumnConstraints colConstraints2 = new ColumnConstraints(cellWidth);
             campoComputador.getColumnConstraints().add(colConstraints2);
         }
-
+        
+        
+        imageViewsJogador = new ArrayList<>();
+        
+        imageViewsComputador = new ArrayList<>();
 
         imageViewsJogador = createImageViews();
         
         imageViewsComputador = createImageViews();
+        
+        for (ImageView imageView : imageViewsJogador) {
+            imageView.setOnMousePressed(this::onImagePressed);
+            imageView.setOnMouseDragged(this::onImageDragged);
+            imageView.setOnMouseReleased(this::onImageReleased);
+        }
         
         posicionarNaviosAleatorio(imageViewsComputador, campoComputador, true);
         
@@ -309,8 +308,14 @@ public class TelaPrincipalController implements Initializable {
     
     @FXML
     public void resetarJogo() {
-    	System.out.println("Teste");
-    	
+    	botaoInit.setStyle("-fx-focus-color: transparent;");
+    	if(jogo.isOver()) {
+	    	System.out.println("Teste");
+	    	campoComputador.getChildren().clear();
+	    	campoJogador.getChildren().clear();
+	    	configurarValoresIniciais();
+	    	botaoInit.setMouseTransparent(false);
+	    } 
     }
 
     public void onImagePressed(MouseEvent event) {

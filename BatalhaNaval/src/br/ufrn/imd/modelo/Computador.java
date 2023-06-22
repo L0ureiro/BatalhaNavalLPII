@@ -67,8 +67,8 @@ public class Computador extends Jogador {
 	 */
 	public Posicao getDisparoComputador() {
         Posicao posicaoDisparo;
+        int cont = 0;
         Random random = new Random();
-        int ultimaPosicao = 0;
         
         do {
             if (disparosAtingidos.isEmpty()) {
@@ -76,11 +76,17 @@ public class Computador extends Jogador {
                 int y = random.nextInt(10);
                 posicaoDisparo = new Posicao(x, y);
             } else {
-                ultimaPosicao = disparosAtingidos.size() - 1;
-                Posicao ultimoDisparo = disparosAtingidos.get(ultimaPosicao);
+            	int ultimaPosicao = disparosAtingidos.size() - 1;
+            	Posicao ultimoDisparo = disparosAtingidos.get(ultimaPosicao);
                 posicaoDisparo = getRandomVizinho(ultimoDisparo);
             }
             
+            
+            if(cont == 2) {
+            	removeDisparoAtingido(posicaoDisparo);
+            }
+            
+            cont++;
         } while(disparosAtingidos.contains(posicaoDisparo) || disparosFeitos.contains(posicaoDisparo));
         
         addDisparoFeitos(posicaoDisparo);
@@ -117,7 +123,7 @@ public class Computador extends Jogador {
 
 	        cont++; // Incrementa o contador
 	        
-	    } while (vizinhos.isEmpty() && cont <= 2);
+	    } while (vizinhos.isEmpty() && cont <= 3);
 	    
 	    if(vizinhos.isEmpty()) {
 	    	return ultimoDisparo;

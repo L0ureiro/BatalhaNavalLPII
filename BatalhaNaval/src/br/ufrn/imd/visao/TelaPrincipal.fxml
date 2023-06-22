@@ -35,7 +35,7 @@
       </Text>
       <Text layoutX="37.0" layoutY="599.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Campo Jogador" wrappingWidth="183.13671875" />
       <Text layoutX="560.0" layoutY="599.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Campo Adversário" wrappingWidth="183.13671875" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="31.0" layoutX="289.0" layoutY="678.0" stroke="RED" strokeType="INSIDE" width="502.0" />
+      <Rectangle fx:id="retanguloTextoComputador" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="31.0" layoutX="289.0" layoutY="678.0" stroke="RED" strokeType="INSIDE" width="502.0" />
       <Text fx:id="textoComputador" layoutX="290.0" layoutY="699.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="500.0">
          <font>
             <Font size="14.0" />

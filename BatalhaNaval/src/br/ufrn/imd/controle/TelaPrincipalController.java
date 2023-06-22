@@ -64,6 +64,9 @@ public class TelaPrincipalController implements Initializable {
     
     @FXML
     private Text textoComputador;
+    
+    @FXML
+    private Rectangle retanguloTextoComputador;
 
     private List<ImageView> imageViewsJogador;
 
@@ -101,6 +104,8 @@ public class TelaPrincipalController implements Initializable {
      * 
      */
     public void configurarValoresIniciais() {
+    	
+    	retanguloTextoComputador.setVisible(false);
     	
     	jogo = new Jogo();
     	
@@ -279,6 +284,8 @@ public class TelaPrincipalController implements Initializable {
     @FXML
     public void iniciarJogo() {
     	textoJogador.setText("O jogo começou! Faça sua jogada");
+    	
+    	retanguloTextoComputador.setVisible(true);
         
         botaoInit.setMouseTransparent(true);
         botaoInit.setStyle("-fx-focus-color: transparent;");
@@ -343,7 +350,7 @@ public class TelaPrincipalController implements Initializable {
     	    isDragging = true;
     	}
     	
-    	if (event.getButton() == MouseButton.SECONDARY) {    		
+    	if (event.getButton() == MouseButton.SECONDARY && !isDragging) {    		
     	    
     	    Rotate rotate;
     	    
@@ -452,10 +459,12 @@ public class TelaPrincipalController implements Initializable {
 
 	    
 	        if (!isInGridPane(snappedX, snappedY, imageView) || ocuppedArea(campoJogador, (int)snappedY/50, (int)snappedX/50, imageView)) {
-	            imageView.setTranslateX(initialTranslateX);
+	        	alertaPosicaoInvalida(true);
+	        	
+	        	imageView.setTranslateX(initialTranslateX);
 	            imageView.setTranslateY(initialTranslateY);
 	          
-
+	            
 	            setShipArea(campoJogador, (int)initialTranslateY/50, (int)initialTranslateX/50, imageView, true);
 	        } else {
 	        	
@@ -794,6 +803,20 @@ public class TelaPrincipalController implements Initializable {
         }
     	
     	System.out.println("ACABOU");
+    }
+    
+    public void alertaPosicaoInvalida(boolean foraDoGrid) {
+    	Alert alert = new Alert(AlertType.WARNING);
+        alert.setTitle("Posição inválida");
+        alert.setHeaderText(null);
+        
+        if(foraDoGrid) {
+        	alert.setContentText("Não é possível posicionar um navio fora do Grid!");
+        } else {
+        	alert.setContentText("Não é possível posicionar um navio por cima de outro navio!");
+        }
+        
+        alert.show();
     }
 
 }

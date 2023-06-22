@@ -171,6 +171,8 @@ public class TelaPrincipalController implements Initializable {
         posicionarNaviosAleatorio(imageViewsComputador, campoComputador, true);
         
         posicionarNaviosAleatorio(imageViewsJogador, campoJogador, false);
+        
+        botaoReset.setStyle("-fx-focus-color: transparent;");
 
     }
     
@@ -308,12 +310,12 @@ public class TelaPrincipalController implements Initializable {
     
     @FXML
     public void resetarJogo() {
-    	botaoInit.setStyle("-fx-focus-color: transparent;");
     	if(jogo.isOver()) {
 	    	System.out.println("Teste");
 	    	campoComputador.getChildren().clear();
 	    	campoJogador.getChildren().clear();
 	    	configurarValoresIniciais();
+	    	botaoInit.setStyle("-fx-focus-color: -fx-outer-border, -fx-inner-border, -fx-body-color;");
 	    	botaoInit.setMouseTransparent(false);
 	    } 
     }
@@ -718,23 +720,8 @@ public class TelaPrincipalController implements Initializable {
         }
         
         if(jogo.isOver()) {
-        	Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Fim do Jogo");
-            alert.setHeaderText(null);
-            alert.setContentText("O jogo acabou! Parabéns você venceu!");
-            alert.showAndWait();
         	
-        	for (int row = 0; row < 10; row++) {
-                for (int col = 0; col < 10; col++) {
-                	Node node = getNodeByRowColumnIndex(row, col, campoComputador);
-                	
-                	if (node instanceof Celula) {
-                    	Celula rectangle = (Celula) node;
-                    	rectangle.setMouseTransparent(true);
-                    }
-                }
-        	} 
-        	System.out.println("ACABOU");
+        	encerrarPartida(true);
         	
         	return;
         }
@@ -759,29 +746,43 @@ public class TelaPrincipalController implements Initializable {
         celula.setMouseTransparent(true);
         
         if(jogo.isOver()) {
-        	Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Fim do Jogo");
-            alert.setHeaderText(null);
-            alert.setContentText("O jogo acabou! Que pena você perdeu =(");
-            alert.showAndWait();
-        	
-        	for (int row = 0; row < 10; row++) {
-                for (int col = 0; col < 10; col++) {
-                	Node node = getNodeByRowColumnIndex(row, col, campoComputador);
-                	
-                	if (node instanceof Celula) {
-                    	Celula rectangle = (Celula) node;
-                    	rectangle.setMouseTransparent(true);
-                    }
-                }
-            }
-        	
-        	System.out.println("ACABOU");
+
+        	encerrarPartida(false);
         	
         	return;
         } 
         
        // textoTela.setText("Sua vez de jogar");
 	}
+    
+    public void encerrarPartida(boolean jogadorVenceu) {
+    	botaoReset.setStyle("-fx-focus-color: -fx-outer-border, -fx-inner-border, -fx-body-color;");
+    	
+    	Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Fim do Jogo");
+        alert.setHeaderText(null);
+        
+        if(jogadorVenceu) {
+        	alert.setContentText("O jogo acabou! Parabéns você venceu!");
+        } else {
+        	alert.setContentText("O jogo acabou! Que pena você perdeu =(");
+        }
+        
+        
+        alert.showAndWait();
+    	
+    	for (int row = 0; row < 10; row++) {
+            for (int col = 0; col < 10; col++) {
+            	Node node = getNodeByRowColumnIndex(row, col, campoComputador);
+            	
+            	if (node instanceof Celula) {
+                	Celula rectangle = (Celula) node;
+                	rectangle.setMouseTransparent(true);
+                }
+            }
+        }
+    	
+    	System.out.println("ACABOU");
+    }
 
 }

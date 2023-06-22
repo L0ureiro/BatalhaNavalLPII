@@ -78,8 +78,6 @@ public class Jogo {
 		
 		if(navio != null) {
 			
-			System.out.println("Computador Atingido");
-			
 			if(computador.isDerrotado()) {
 				this.over = true;
 			}

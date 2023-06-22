@@ -452,7 +452,6 @@ public class TelaPrincipalController implements Initializable {
 	          
 
 	            setShipArea(campoJogador, (int)initialTranslateY/50, (int)initialTranslateX/50, imageView, true);
-	            System.out.println("NÃO É POSSÍVEL POSICIONAR A IMAGEM FORA DO GRID");
 	        } else {
 	        	
 	        	// Depois podemos refatorar esse código e transformar num método pra ajustar a imagem no grid.
@@ -472,7 +471,6 @@ public class TelaPrincipalController implements Initializable {
 	        	
 	            imageView.setTranslateX(snappedX + 3);
 	            imageView.setTranslateY(snappedY);
-	            System.out.println("imagem posicionada");
 	        }
 	
     	}
@@ -710,17 +708,13 @@ public class TelaPrincipalController implements Initializable {
         
         if(celula.isTemNavio()) {
         	campoComputador.add(imageViewComputadorAtingido, celula.getPosicaoXY().getX(), celula.getPosicaoXY().getY());
-        	System.out.println("X = " + celula.getPosicaoXY().getX() + " Y = " + celula.getPosicaoXY().getY());
-
         	
         	if(afundado >= 0) {
         		imageViewsComputador.get(afundado).setVisible(true);
         		textoTela.setText(imageViewsComputador.get(afundado).getId() + " foi afundado");
         	}
-        	//celula.setFill(Color.HOTPINK);
         } else {
         	campoComputador.add(imageViewComputador, celula.getPosicaoXY().getX(), celula.getPosicaoXY().getY());
-        	//celula.setFill(Color.GREEN);
         }
         
         if(jogo.isOver()) {
@@ -755,11 +749,9 @@ public class TelaPrincipalController implements Initializable {
         	Celula rectangle = (Celula) node2;
         	if(rectangle.isTemNavio()) {
         		campoJogador.add(imageViewJogadorAtingido, disparoComputador.getX(), disparoComputador.getY());
-        		//rectangle.setFill(Color.HOTPINK);
             }
         	else {
         		campoJogador.add(imageViewJogador, disparoComputador.getX(), disparoComputador.getY());
-        		//rectangle.setFill(Color.GREEN);
         	}
         }
     	
@@ -789,7 +781,7 @@ public class TelaPrincipalController implements Initializable {
         	return;
         } 
         
-       // textoTela.setText("Sua vez jogar");
+       // textoTela.setText("Sua vez de jogar");
 	}
 
 }

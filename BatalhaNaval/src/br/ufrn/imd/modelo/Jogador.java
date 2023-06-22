@@ -93,12 +93,9 @@ public class Jogador {
 			
 			
 			if(navio.getPosicoesXY().contains(posicao)) {
-				navio.atingido(posicao);
-						
-				System.out.println("Navio atingido");
+				navio.atingido(posicao);		
 				
 				if(navio.isAfundado()) {
-					System.out.println("Navio afundado! " + navio.getTamanho());
 					navios.remove(navio);
 				}
 				return navio;

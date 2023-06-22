@@ -2,6 +2,15 @@ package br.ufrn.imd.modelo;
 
 import java.util.ArrayList;
 
+/**
+ * Classe responsável por representar os návios do jogo Batalha Naval.
+ * Possui um ArrayList de Posicao que armazenam todas as coordenadas ocupadas por este navio,
+ * além da variável que determina seu tamanho.
+ * 
+ * @author Lucas L. 
+ * @author Carlos T.
+ *
+ */
 public class Navio {
 	
 	private ArrayList<Posicao> posicoesXY;
@@ -32,10 +41,20 @@ public class Navio {
 		posicoesXY.add(posXY);
 	}
 	
+	/**
+	 * Retorna verdadeiro quando não possui mais posições armazenadas
+	 * em seu Array posicoesXY, ou seja, o navio foi afundado.
+	 * @return
+	 */
 	public Boolean isAfundado() {
 		return posicoesXY.isEmpty();
 	}
-
+	
+	/**
+	 * Remove a posicao passada como parametro do Array posicoesXY
+	 * simbolizando que esta foi atingida.
+	 * @param posicao posicao atingida
+	 */
 	public void atingido(Posicao posicao) {
 		posicoesXY.remove(posicao);
 	}

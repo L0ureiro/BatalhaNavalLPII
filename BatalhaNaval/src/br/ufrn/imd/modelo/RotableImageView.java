@@ -2,7 +2,14 @@ package br.ufrn.imd.modelo;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
+/**
+ * Esta classe herda da classe ImageView e tem a função de guardar uma Posicao(x,y)
+ * fazendo referencia as coordenadas dessa imagem no GridPane
+ * 
+ * @author Lucas L. 
+ * @author Carlos T.
+ * 
+ */
 public class RotableImageView extends ImageView {
     private boolean rotated;
     private Posicao posicaoImageXY;

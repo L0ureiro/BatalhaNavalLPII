@@ -12,6 +12,13 @@
 
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.ufrn.imd.controle.TelaPrincipalController">
    <children>
+      <Button fx:id="botaoReset" layoutX="466.0" layoutY="728.0" mnemonicParsing="false" onAction="#resetarJogo" text="Reiniciar" />
+      <Button fx:id="botaoInit" layoutX="550.0" layoutY="728.0" mnemonicParsing="false" onAction="#iniciarJogo" text="Jogar" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#dddddd" height="31.0" layoutX="27.0" layoutY="579.0" stroke="BLACK" strokeType="INSIDE" width="502.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#dddddd" height="31.0" layoutX="550.0" layoutY="579.0" stroke="BLACK" strokeType="INSIDE" width="502.0" />
+      <GridPane fx:id="campoComputador" layoutX="550.0" layoutY="80.0" maxHeight="500.0" maxWidth="500.0" minHeight="500.0" minWidth="500.0" prefHeight="500.0" prefWidth="500.0" style="-fx-border-color: black;">
+      </GridPane>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="31.0" layoutX="290.0" layoutY="631.0" stroke="#00e107" strokeType="INSIDE" width="502.0" />
       <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1080.0">
          <menus>
             <Menu mnemonicParsing="false" text="Help">
@@ -21,21 +28,21 @@
             </Menu>
          </menus>
       </MenuBar>
-      <GridPane fx:id="campoJogador" layoutX="27.0" layoutY="80.0" maxHeight="500.0" maxWidth="500.0" minHeight="500.0" minWidth="500.0" prefHeight="500.0" prefWidth="500.0" style="-fx-border-color: black;">
-      </GridPane>
-      <GridPane fx:id="campoComputador" layoutX="550.0" layoutY="80.0" maxHeight="500.0" maxWidth="500.0" minHeight="500.0" minWidth="500.0" prefHeight="500.0" prefWidth="500.0" style="-fx-border-color: black;">
-      </GridPane>
-      <Button fx:id="botaoInit" layoutX="518.0" layoutY="693.0" mnemonicParsing="false" onAction="#iniciarJogo" text="Jogar" />
-      <Text fx:id="textoTela" layoutX="291.0" layoutY="652.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Posicione os navios onde bem entender e clique em 'Jogar' para começar" textAlignment="CENTER" wrappingWidth="500.0">
+      <Text fx:id="textoJogador" layoutX="291.0" layoutY="652.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Posicione os navios onde bem entender e clique em 'Jogar' para começar" textAlignment="CENTER" wrappingWidth="500.0">
          <font>
             <Font size="14.0" />
          </font>
       </Text>
-      <Button fx:id="botaoReset" layoutX="27.0" layoutY="693.0" mnemonicParsing="false" onAction="#resetarJogo" text="Reiniciar" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#dddddd" height="31.0" layoutX="27.0" layoutY="579.0" stroke="BLACK" strokeType="INSIDE" width="502.0" />
       <Text layoutX="37.0" layoutY="599.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Campo Jogador" wrappingWidth="183.13671875" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#dddddd" height="31.0" layoutX="550.0" layoutY="579.0" stroke="BLACK" strokeType="INSIDE" width="502.0" />
       <Text layoutX="560.0" layoutY="599.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Campo Adversário" wrappingWidth="183.13671875" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="31.0" layoutX="289.0" layoutY="678.0" stroke="RED" strokeType="INSIDE" width="502.0" />
+      <Text fx:id="textoComputador" layoutX="290.0" layoutY="699.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="500.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Text>
+      <GridPane fx:id="campoJogador" layoutX="27.0" layoutY="80.0" maxHeight="500.0" maxWidth="500.0" minHeight="500.0" minWidth="500.0" prefHeight="500.0" prefWidth="500.0" style="-fx-border-color: black;">
+      </GridPane>
       
    </children>
 </AnchorPane>

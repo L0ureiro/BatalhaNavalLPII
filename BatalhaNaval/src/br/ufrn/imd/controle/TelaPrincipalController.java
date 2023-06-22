@@ -60,7 +60,10 @@ public class TelaPrincipalController implements Initializable {
     private Button botaoReset;
     
     @FXML
-    private Text textoTela;
+    private Text textoJogador;
+    
+    @FXML
+    private Text textoComputador;
 
     private List<ImageView> imageViewsJogador;
 
@@ -275,7 +278,7 @@ public class TelaPrincipalController implements Initializable {
 
     @FXML
     public void iniciarJogo() {
-        textoTela.setText("Faça sua jogada");
+    	textoJogador.setText("O jogo começou! Faça sua jogada");
         
         botaoInit.setMouseTransparent(true);
         botaoInit.setStyle("-fx-focus-color: transparent;");
@@ -711,11 +714,14 @@ public class TelaPrincipalController implements Initializable {
         if(celula.isTemNavio()) {
         	campoComputador.add(imageViewComputadorAtingido, celula.getPosicaoXY().getX(), celula.getPosicaoXY().getY());
         	
+        	textoJogador.setText("Você atingiu um navio na posição: (" + celula.getPosicaoXY().getX() + ", " + celula.getPosicaoXY().getY() + ")");
+        	
         	if(afundado >= 0) {
         		imageViewsComputador.get(afundado).setVisible(true);
-        		textoTela.setText(imageViewsComputador.get(afundado).getId() + " foi afundado");
+        		textoJogador.setText("Você afundou o " + imageViewsComputador.get(afundado).getId() + " inimigo");
         	}
         } else {
+        	textoJogador.setText("Seu tiro atingiu a água na posição: (" + celula.getPosicaoXY().getX() + ", " + celula.getPosicaoXY().getY() + ")");
         	campoComputador.add(imageViewComputador, celula.getPosicaoXY().getX(), celula.getPosicaoXY().getY());
         }
         
@@ -735,9 +741,11 @@ public class TelaPrincipalController implements Initializable {
     	if (node2 instanceof Celula) {
         	Celula rectangle = (Celula) node2;
         	if(rectangle.isTemNavio()) {
+        		textoComputador.setText("Advesário atingiu um navio na posição: (" + disparoComputador.getX() + ", " + disparoComputador.getY() + ")");
         		campoJogador.add(imageViewJogadorAtingido, disparoComputador.getX(), disparoComputador.getY());
             }
         	else {
+        		textoComputador.setText("Adversário errou o disparo e atingiu a água na posição: (" + celula.getPosicaoXY().getX() + ", " + celula.getPosicaoXY().getY() + ")");
         		campoJogador.add(imageViewJogador, disparoComputador.getX(), disparoComputador.getY());
         	}
         }
@@ -757,6 +765,9 @@ public class TelaPrincipalController implements Initializable {
     
     public void encerrarPartida(boolean jogadorVenceu) {
     	botaoReset.setStyle("-fx-focus-color: -fx-outer-border, -fx-inner-border, -fx-body-color;");
+    	
+    	textoJogador.setText("Clique em reiniciar para jogar novamente.");  
+    	textoComputador.setText(""); 
     	
     	Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Fim do Jogo");

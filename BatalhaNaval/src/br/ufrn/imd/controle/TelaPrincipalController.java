@@ -110,6 +110,7 @@ public class TelaPrincipalController implements Initializable {
     public void configurarValoresIniciais() {
     	
     	retanguloTextoComputador.setVisible(false);
+    	textoJogador.setText("Posicione os navios onde bem entender e clique em 'Jogar' para começar");
     	
     	jogo = new Jogo();
     	
@@ -128,7 +129,6 @@ public class TelaPrincipalController implements Initializable {
                 Image image2 = new Image(getClass().getResourceAsStream("/images/ocean.png"));
                 ImageView imageView2 = new RotableImageView(image2);
 
-                
                 imageView2.setFitWidth(cellWidth);
                 imageView2.setFitHeight(cellHeight);
                 
@@ -289,6 +289,8 @@ public class TelaPrincipalController implements Initializable {
     public void iniciarJogo() {
     	textoJogador.setText("O jogo começou! Faça sua jogada");
     	
+    	retanguloTextoComputador.setStroke(Color.RED);
+    	
     	retanguloTextoComputador.setVisible(true);
         
         botaoInit.setMouseTransparent(true);
@@ -325,7 +327,6 @@ public class TelaPrincipalController implements Initializable {
     @FXML
     public void resetarJogo() {
     	if(jogo.isOver()) {
-	    	System.out.println("Teste");
 	    	campoComputador.getChildren().clear();
 	    	campoJogador.getChildren().clear();
 	    	configurarValoresIniciais();
@@ -335,6 +336,9 @@ public class TelaPrincipalController implements Initializable {
     }
 
     public void onImagePressed(MouseEvent event) {
+    	retanguloTextoComputador.setVisible(false);
+    	textoComputador.setText("");
+    	
     	ImageView imageView = (ImageView) event.getSource();
     	// Ajustando a posição ao grid
         double snappedX = snapToGrid(imageView.getTranslateX());
@@ -362,12 +366,15 @@ public class TelaPrincipalController implements Initializable {
     	    initialTranslateY = imageView.getTranslateY();
 
             if(snappedX <= 0 || snappedX >= 450 || snappedY <= 0 || snappedY >= 450) {
+            	alertaPosicaoInvalida(false);
             	return;
             }
             if(imageView.getId().equals("Destroyer") && ((snappedX <= 50 || snappedX >= 400) || (snappedY <= 50 || snappedY >= 400)) ) {
+            	alertaPosicaoInvalida(false);
             	return;
             }
             if(imageView.getId().equals("Fragata") && ((snappedX < 50 || snappedX >= 400) || (snappedY < 50 || snappedY >= 400))) {
+            	alertaPosicaoInvalida(false);
             	return;
             }
             
@@ -375,6 +382,7 @@ public class TelaPrincipalController implements Initializable {
             	((RotableImageView) imageView).setRotated(false);
             	if(ocuppedAreaRotate(campoJogador, (int)snappedY/50, (int)snappedX/50, imageView)) {
             		((RotableImageView) imageView).setRotated(true);
+            		alertaPosicaoInvalida(false);
             		return;
             	} else {
             		((RotableImageView) imageView).setRotated(true);
@@ -382,6 +390,7 @@ public class TelaPrincipalController implements Initializable {
             } else {
             	((RotableImageView) imageView).setRotated(true);
             	if(ocuppedAreaRotate(campoJogador, (int)snappedY/50, (int)snappedX/50, imageView)) {
+            		alertaPosicaoInvalida(false);
             		((RotableImageView) imageView).setRotated(false);
             		return;
             	} else {
@@ -805,22 +814,21 @@ public class TelaPrincipalController implements Initializable {
                 }
             }
         }
-    	
-    	System.out.println("ACABOU");
     }
     
     public void alertaPosicaoInvalida(boolean foraDoGrid) {
-    	Alert alert = new Alert(AlertType.WARNING);
-        alert.setTitle("Posição inválida");
-        alert.setHeaderText(null);
         
+    	Text textoAlerta = textoComputador;
+    	Rectangle retanguloAlerta = retanguloTextoComputador;
+    	
+    	retanguloAlerta.setVisible(true);
+    	
         if(foraDoGrid) {
-        	alert.setContentText("Não é possível posicionar um navio fora do Grid!");
+        	textoAlerta.setText("Não é possível posicionar um navio nessa posição".toUpperCase());
         } else {
-        	alert.setContentText("Não é possível posicionar um navio por cima de outro navio!");
+        	textoAlerta.setText("Não é possível rotacionar um navio para essa posição!".toUpperCase());
         }
-        
-        alert.show();
+
     }
     
     @FXML

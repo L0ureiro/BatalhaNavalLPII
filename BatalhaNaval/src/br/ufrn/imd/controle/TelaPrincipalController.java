@@ -16,6 +16,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -67,6 +68,9 @@ public class TelaPrincipalController implements Initializable {
     
     @FXML
     private Rectangle retanguloTextoComputador;
+    
+    @FXML
+    private MenuItem comoJogarItem;
 
     private List<ImageView> imageViewsJogador;
 
@@ -99,7 +103,7 @@ public class TelaPrincipalController implements Initializable {
     }
     
     /**
-     * Método por gerar as células, configurar o backgroud dos Grids, inicializar e setar
+     * Método que irá gerar as células, configurar o backgroud dos Grids, inicializar e setar
      * as imagens dos arrays de navios e por fim dispo-los de forma aleatória no Grid.
      * 
      */
@@ -817,6 +821,25 @@ public class TelaPrincipalController implements Initializable {
         }
         
         alert.show();
+    }
+    
+    @FXML
+    public void alertaComoJogar() {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Como jogar");
+        alert.setHeaderText(null);
+        alert.setContentText("O jogo é jogado em tabuleiros, seu tabuleiro é o da esquerda e o do adversário é o tabuleiro da direita.\r\n"
+        		+ "\r\n"
+        		+ "Antes de começar o jogo, posicione seus navios onde desejar, apenas dentro de seu tabuleiro. Clique e arraste para isso. Os navios podem ser colocados na vertical ou na horizontal e não podem se sobrepor.\r\n"
+        		+ "\r\n"
+        		+ "Quando estiver satisfeito clique no botão \"Jogar\". Os jogadores alternam entre fazer \"tiros\" no tabuleiro do oponente. Para fazer um tiro basta clicar na casa que deseja no campo adversário.\r\n"
+        		+ "\r\n"
+        		+ "Se o tiro atingir uma parte de um navio inimigo, é um \"acerto\". Se todos os segmentos de um navio forem atingidos, o navio é afundado e será mostrado na tela\r\n"
+        		+ "\r\n"
+        		+ "Se o tiro não acertar nenhum navio, é um \"erro\".\r\n"
+        		+ "\r\n"
+        		+ "Os jogadores continuam alternando entre fazer tiros até que todos os navios de um jogador sejam afundados. O jogador que afundar todos os navios do oponente primeiro é o vencedor.");
+        alert.showAndWait();
     }
 
 }

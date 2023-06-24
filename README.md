@@ -29,7 +29,7 @@ $ git clone https://github.com/L0ureiro/BatalhaNavalLPII.git
 
 Para jogar basta abrir o arquivo `BatalhaNaval.jar`.
 
-Caso deseje ver o código, abra-o no Eclipse IDE.
+Caso deseje ver o código, abra-o no Eclipse IDE. Para isso será necessário instalar e configurar o `JavaFX 17.0.7` e suas dependências.
 
 ## Observações
 

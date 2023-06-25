@@ -17,9 +17,6 @@ public class Main extends Application {
 		try {			
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/br/ufrn/imd/visao/TelaPrincipal.fxml"));
 			Parent root = loader.load();
-			//Parent root = FXMLLoader.load(getClass().getResource("/br/ufrn/imd/visao/TelaPrincipal.fxml"));
-			
-			//controller = loader.getController();
 			
 			primaryStage.setTitle("Batalha Naval v1.0");
 			Scene scene = new Scene(root);

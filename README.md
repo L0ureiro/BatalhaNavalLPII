@@ -31,6 +31,27 @@ Para jogar basta abrir o arquivo `BatalhaNaval.jar`.
 
 Caso deseje ver o código, abra-o no Eclipse IDE. Para isso será necessário instalar e configurar o `JavaFX 17.0.7` e suas dependências.
 
+## Demonstração
+ - Posicionamento
+
+    <img src="assets\gif\PosNavio1.gif" width="300" >
+    <img src="assets\gif\PosNavio2.gif" width="300" >
+
+- Rotação dos navios
+
+    <img src="assets\gif\RotaNavio1.gif" width="300" >
+    <img src="assets\gif\RotaNavio2-1.gif" width="300" >
+
+- Inicio de jogo e disparos
+
+    <img src="assets\gif\Disparos1.gif" width="300" >
+    <img src="assets\gif\Disparos2.gif" width="300" >
+
+- Fim de jogo e reinicio 
+
+    <img src="assets\gif\FimDeJogo.gif" width="300" > 
+    <img src="assets\gif\JogarNovamente.gif" width="300" >   
+
 ## Observações
 
 Não conseguimos gerar o arquivo da documentação (JavaDoc) e nem o .jar através do Eclipse, devido a isso, recriamos o projeto 
